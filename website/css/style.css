@@ -390,7 +390,7 @@ section { padding: 6rem 2rem; }
   position: relative;
   border-radius: 20px;
   overflow: hidden;
-  background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/1b/Sanagochivillage_Kami_%E5%A4%A7%E9%BB%92_Tokushimapref.jpg') !important;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/99/Saga-kyou.jpeg') !important;
   background-size: cover !important;
   background-position: center !important;
   aspect-ratio: 4/3;
@@ -461,7 +461,7 @@ section { padding: 6rem 2rem; }
 .spot-card-img-3 {
   background:
     linear-gradient(180deg, rgba(5,5,20,0.25) 0%, rgba(5,5,20,0.1) 100%),
-    url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg/640px-Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg') center / cover no-repeat;
+    url('https://cdn-ak.f.st-hatena.com/images/fotolife/S/Starryheavens/20240705/20240705141819.jpg') center / cover no-repeat;
 }
 .spot-card-img-4 {
   background: url('https://www.vill.sanagochi.lg.jp/docs/2012120400125/file_contents/ohmiyazinja01.jpg') center / cover no-repeat;
