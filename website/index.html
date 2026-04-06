@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>佐那河内村 | 便利な田舎、最高の自然。</title>
+  <meta name="description" content="徳島県唯一の村・佐那河内村。幻のいちご「さくらももいちご」、3万本のあじさい咲く大川原高原、清流の嵯峨川。都市から車20分の豊かな暮らし。">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ナビゲーション -->
+  <nav class="nav" id="nav">
+    <a class="nav-logo" href="#">
+      <div class="nav-logo-icon">🌿</div>
+      <div>
+        <div class="nav-logo-text">佐那河内村</div>
+        <div class="nav-logo-sub">SANAGOCHI VILLAGE</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">村について</a></li>
+      <li><a href="#spots">観光スポット</a></li>
+      <li><a href="#products">特産品</a></li>
+      <li><a href="#migrate">移住情報</a></li>
+      <li><a href="../game/index.html" class="nav-game-btn">🎮 ゲームで探索</a></li>
+    </ul>
+    <button class="nav-hamburger" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ヒーロー -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+
+    <!-- 雲 -->
+    <div class="hero-cloud hero-cloud-1"></div>
+    <div class="hero-cloud hero-cloud-2"></div>
+    <div class="hero-cloud hero-cloud-3"></div>
+
+    <!-- 山々のシルエット（SVG） -->
+    <svg class="hero-mountains" viewBox="0 0 1440 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 遠景の山 -->
+      <polygon points="0,400 0,200 180,80 360,160 540,60 720,140 900,50 1080,130 1260,70 1440,150 1440,400" fill="rgba(27,67,50,0.5)"/>
+      <!-- 中景の山 -->
+      <polygon points="0,400 0,280 200,150 400,220 600,130 800,200 1000,110 1200,190 1440,140 1440,400" fill="rgba(45,106,79,0.65)"/>
+      <!-- 前景の山と丘 -->
+      <polygon points="0,400 0,340 150,260 350,300 550,230 750,290 950,220 1150,280 1350,240 1440,260 1440,400" fill="rgba(64,145,108,0.85)"/>
+      <!-- 一番手前の丘 -->
+      <polygon points="0,400 0,370 100,340 300,360 500,330 700,355 900,325 1100,350 1300,330 1440,345 1440,400" fill="rgba(82,183,136,0.9)"/>
+    </svg>
+
+    <!-- 木々のシルエット（SVG） -->
+    <svg style="position:absolute;bottom:0;left:0;right:0;width:100%;height:120px" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#1b4332" opacity="0.9">
+        <!-- 木 1 -->
+        <polygon points="60,120 80,120 70,60"/>
+        <polygon points="55,90 85,90 70,45"/>
+        <rect x="67" y="100" width="6" height="20"/>
+        <!-- 木 2 -->
+        <polygon points="140,120 165,120 152,55"/>
+        <polygon points="134,88 171,88 152,38"/>
+        <rect x="149" y="100" width="7" height="20"/>
+        <!-- 木 3 -->
+        <polygon points="240,120 260,120 250,68"/>
+        <polygon points="235,95 265,95 250,52"/>
+        <rect x="247" y="105" width="6" height="15"/>
+        <!-- 木 4 -->
+        <polygon points="350,120 375,120 362,50"/>
+        <polygon points="344,85 381,85 362,35"/>
+        <rect x="359" y="100" width="7" height="20"/>
+        <!-- 木 5 -->
+        <polygon points="460,120 482,120 471,62"/>
+        <polygon points="455,92 487,92 471,46"/>
+        <rect x="468" y="105" width="6" height="15"/>
+        <!-- 木 6 -->
+        <polygon points="570,120 595,120 582,53"/>
+        <polygon points="564,88 601,88 582,38"/>
+        <rect x="579" y="105" width="7" height="15"/>
+        <!-- 木 7 -->
+        <polygon points="680,120 702,120 691,65"/>
+        <polygon points="675,94 707,94 691,49"/>
+        <rect x="688" y="107" width="6" height="13"/>
+        <!-- 木 8 -->
+        <polygon points="790,120 815,120 802,55"/>
+        <polygon points="784,87 821,87 802,40"/>
+        <rect x="799" y="103" width="7" height="17"/>
+        <!-- 木 9 -->
+        <polygon points="900,120 922,120 911,63"/>
+        <polygon points="895,93 927,93 911,47"/>
+        <rect x="908" y="106" width="6" height="14"/>
+        <!-- 木 10 -->
+        <polygon points="1010,120 1035,120 1022,52"/>
+        <polygon points="1004,86 1041,86 1022,37"/>
+        <rect x="1019" y="103" width="7" height="17"/>
+        <!-- 木 11 -->
+        <polygon points="1120,120 1142,120 1131,61"/>
+        <polygon points="1115,91 1147,91 1131,45"/>
+        <rect x="1128" y="104" width="6" height="16"/>
+        <!-- 木 12 -->
+        <polygon points="1230,120 1255,120 1242,54"/>
+        <polygon points="1224,88 1261,88 1242,39"/>
+        <rect x="1239" y="103" width="7" height="17"/>
+        <!-- 木 13 -->
+        <polygon points="1340,120 1362,120 1351,64"/>
+        <polygon points="1335,93 1367,93 1351,48"/>
+        <rect x="1348" y="106" width="6" height="14"/>
+        <!-- 木 14 -->
+        <polygon points="1410,120 1430,120 1420,70"/>
+        <polygon points="1405,98 1435,98 1420,55"/>
+        <rect x="1417" y="108" width="6" height="12"/>
+      </g>
+    </svg>
+
+    <div class="hero-content">
+      <div class="hero-tag">🌿 徳島県唯一の村 — TOKUSHIMA, JAPAN</div>
+      <h1 class="hero-title">佐那河内村</h1>
+      <p class="hero-title-en">Sanagochi Village</p>
+      <p class="hero-subtitle">
+        都市から車で20分。<br>
+        3万本のあじさい、幻のいちご、千年の清流。<br>
+        「便利な田舎」がここにある。
+      </p>
+      <div class="hero-buttons">
+        <a href="#spots" class="btn-primary">村を探索する</a>
+        <a href="../game/index.html" class="btn-outline">🎮 ゲームで体験</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll">SCROLL</div>
+  </section>
+
+  <!-- 数字セクション -->
+  <div class="stats">
+    <div class="stats-inner">
+      <div class="stat-item animate-up">
+        <div class="stat-num" data-target="2106" data-suffix="人">2,106人</div>
+        <div class="stat-label">現在の人口<br>（社会増を達成中）</div>
+      </div>
+      <div class="stat-item animate-up">
+        <div class="stat-num" data-target="30000" data-suffix="本">30,000本</div>
+        <div class="stat-label">大川原高原<br>あじさいの数</div>
+      </div>
+      <div class="stat-item animate-up">
+        <div class="stat-num" data-target="20" data-suffix="分">20分</div>
+        <div class="stat-label">徳島市中心部から<br>車でのアクセス</div>
+      </div>
+      <div class="stat-item animate-up">
+        <div class="stat-num" data-target="1000" data-suffix="年">1,000年</div>
+        <div class="stat-label">常会（住民自治）の<br>歴史と伝統</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 村についてセクション -->
+  <section class="about" id="about">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div class="animate-up">
+          <span class="section-tag">About</span>
+          <h2 class="section-title">
+            山と清流に<br>抱かれた、<br>日本唯一の村。
+          </h2>
+          <p class="section-desc">
+            徳島県唯一の「村」として、豊かな自然と1,000年続く住民自治文化を守り続けています。
+            急峻な山々と園瀬川の清流に囲まれた扇状地に、約2,000人が暮らす小さくて豊かなコミュニティ。
+            徳島市内から車でわずか20〜30分という「通勤圏の村」でありながら、
+            本物の自然と濃密なつながりが生きています。
+          </p>
+          <div class="about-badges">
+            <span class="badge">🏔 標高1,020m 大川原高原</span>
+            <span class="badge">🌊 嵯峨川の清流</span>
+            <span class="badge">🌿 再生可能エネルギー</span>
+            <span class="badge">🏘 常会文化 1,000年</span>
+            <span class="badge">🎓 小中一貫校</span>
+            <span class="badge">🚗 徳島市から20分</span>
+          </div>
+        </div>
+        <div class="animate-up">
+          <div class="about-visual">
+            <div class="about-visual-inner">
+              <!-- 村の風景をSVGで表現 -->
+              <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <!-- 空 -->
+                <rect width="400" height="300" fill="url(#skyGrad)"/>
+                <!-- 太陽 -->
+                <circle cx="320" cy="60" r="35" fill="#f9c74f" opacity="0.9"/>
+                <circle cx="320" cy="60" r="45" fill="#f9c74f" opacity="0.3"/>
+                <!-- 雲 -->
+                <ellipse cx="100" cy="70" rx="50" ry="20" fill="white" opacity="0.8"/>
+                <circle cx="80" cy="58" r="22" fill="white" opacity="0.8"/>
+                <circle cx="115" cy="55" r="18" fill="white" opacity="0.8"/>
+                <!-- 山 -->
+                <polygon points="0,200 80,80 160,200" fill="url(#mountainGrad1)"/>
+                <polygon points="100,200 220,60 340,200" fill="url(#mountainGrad2)"/>
+                <polygon points="260,200 360,100 400,200" fill="url(#mountainGrad1)"/>
+                <!-- 雪 -->
+                <polygon points="220,60 207,100 233,100" fill="white" opacity="0.6"/>
+                <!-- 川 -->
+                <path d="M0,240 Q100,220 200,240 Q300,260 400,245" stroke="#74c0e8" stroke-width="6" fill="none" opacity="0.8"/>
+                <path d="M0,248 Q100,228 200,248 Q300,268 400,253" stroke="#a8dadc" stroke-width="3" fill="none" opacity="0.6"/>
+                <!-- 田んぼ・畑 -->
+                <rect x="20" y="210" width="80" height="50" fill="#52b788" opacity="0.6" rx="4"/>
+                <rect x="110" y="215" width="70" height="45" fill="#40916c" opacity="0.5" rx="4"/>
+                <rect x="290" y="212" width="75" height="48" fill="#52b788" opacity="0.6" rx="4"/>
+                <!-- 木 -->
+                <g fill="#1b4332">
+                  <polygon points="180,195 190,195 185,165"/><rect x="183" y="188" width="4" height="12"/>
+                  <polygon points="200,200 213,200 206,168"/><rect x="204" y="192" width="5" height="14"/>
+                  <polygon points="215,196 226,196 220,170"/><rect x="218" y="189" width="4" height="11"/>
+                  <polygon points="240,198 252,198 246,170"/><rect x="244" y="191" width="4" height="12"/>
+                </g>
+                <!-- 家 -->
+                <g opacity="0.85">
+                  <rect x="50" y="195" width="30" height="20" fill="#a0735a"/>
+                  <polygon points="45,195 85,195 67,178" fill="#6b4226"/>
+                  <rect x="58" y="200" width="8" height="15" fill="#5a3e2b"/>
+                  <rect x="50" y="195" width="6" height="8" fill="#d4a574"/>
+
+                  <rect x="130" y="198" width="28" height="18" fill="#8fbc8f"/>
+                  <polygon points="125,198 163,198 144,183" fill="#2d6a4f"/>
+                  <rect x="138" y="203" width="7" height="13" fill="#1b4332"/>
+                </g>
+                <!-- 風車 -->
+                <g transform="translate(355, 115)">
+                  <line x1="0" y1="-40" x2="0" y2="40" stroke="#ccc" stroke-width="2"/>
+                  <line x1="-40" y1="0" x2="40" y2="0" stroke="#ccc" stroke-width="2"/>
+                  <circle cx="0" cy="0" r="5" fill="#999"/>
+                  <circle cx="0" cy="0" r="3" fill="#666"/>
+                </g>
+                <line x1="355" y1="155" x2="355" y2="200" stroke="#999" stroke-width="3"/>
+
+                <!-- あじさい -->
+                <g opacity="0.8">
+                  <circle cx="308" cy="175" r="8" fill="#9370DB"/>
+                  <circle cx="320" cy="170" r="7" fill="#8A2BE2"/>
+                  <circle cx="332" cy="175" r="8" fill="#9370DB"/>
+                  <circle cx="315" cy="165" r="6" fill="#DDA0DD"/>
+                </g>
+
+                <defs>
+                  <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#74c0e8;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#b7e4f9;stop-opacity:1"/>
+                  </linearGradient>
+                  <linearGradient id="mountainGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#40916c;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#2d6a4f;stop-opacity:1"/>
+                  </linearGradient>
+                  <linearGradient id="mountainGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#52b788;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#1b4332;stop-opacity:1"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 観光スポットセクション -->
+  <section class="spots" id="spots">
+    <div class="section-inner">
+      <span class="section-tag animate-up">Tourist Spots</span>
+      <h2 class="section-title animate-up">村の絶景スポット</h2>
+      <p class="section-desc animate-up">
+        標高1,000mの高原から清流まで、四季折々の自然が待っています。
+      </p>
+
+      <div class="spots-grid">
+        <div class="spot-card animate-up">
+          <div class="spot-card-img spot-card-img-1">
+            <svg viewBox="0 0 200 180" width="200" height="180" xmlns="http://www.w3.org/2000/svg">
+              <!-- あじさい群 -->
+              <g opacity="0.9">
+                <circle cx="50" cy="110" r="18" fill="#9370DB" opacity="0.8"/>
+                <circle cx="75" cy="100" r="20" fill="#8A2BE2" opacity="0.9"/>
+                <circle cx="100" cy="108" r="17" fill="#DDA0DD" opacity="0.8"/>
+                <circle cx="125" cy="100" r="21" fill="#9B59B6" opacity="0.9"/>
+                <circle cx="150" cy="108" r="18" fill="#C39BD3" opacity="0.8"/>
+                <circle cx="35" cy="125" r="15" fill="#7B68EE" opacity="0.7"/>
+                <circle cx="63" cy="118" r="16" fill="#9370DB" opacity="0.8"/>
+                <circle cx="90" cy="122" r="18" fill="#8A2BE2" opacity="0.7"/>
+                <circle cx="118" cy="118" r="16" fill="#DDA0DD" opacity="0.8"/>
+                <circle cx="145" cy="122" r="17" fill="#9B59B6" opacity="0.7"/>
+                <circle cx="168" cy="115" r="14" fill="#C39BD3" opacity="0.8"/>
+                <!-- 風車 -->
+                <line x1="160" y1="20" x2="160" y2="80" stroke="white" stroke-width="3"/>
+                <line x1="130" y1="50" x2="190" y2="50" stroke="white" stroke-width="3"/>
+                <circle cx="160" cy="50" r="6" fill="white"/>
+              </g>
+              <!-- 山の稜線 -->
+              <polygon points="0,90 60,40 120,70 200,30 200,90" fill="rgba(45,106,79,0.4)"/>
+            </svg>
+          </div>
+          <div class="spot-card-body">
+            <div class="spot-card-season">6月中旬〜7月中旬</div>
+            <h3 class="spot-card-title">大川原高原</h3>
+            <p class="spot-card-desc">
+              標高1,020m。3万本のあじさいと15基の風車が織りなす絶景。
+              晴れた日には淡路島まで一望。夏は天体観測も楽しめる。
+            </p>
+          </div>
+        </div>
+
+        <div class="spot-card animate-up">
+          <div class="spot-card-img spot-card-img-2">
+            <svg viewBox="0 0 200 180" width="200" height="180" xmlns="http://www.w3.org/2000/svg">
+              <!-- 空 -->
+              <rect width="200" height="100" fill="#74c0e8" opacity="0.6"/>
+              <!-- 川 -->
+              <rect x="0" y="100" width="200" height="80" fill="#52a8d4" opacity="0.5"/>
+              <path d="M0,110 Q50,100 100,115 Q150,130 200,115" stroke="#a8dadc" stroke-width="4" fill="none"/>
+              <path d="M0,125 Q60,115 110,128 Q160,141 200,128" stroke="rgba(255,255,255,0.6)" stroke-width="3" fill="none"/>
+              <!-- 岩 -->
+              <ellipse cx="40" cy="135" rx="20" ry="12" fill="#7a9060" opacity="0.8"/>
+              <ellipse cx="160" cy="140" rx="18" ry="10" fill="#8a9e70" opacity="0.7"/>
+              <ellipse cx="100" cy="142" rx="15" ry="8" fill="#7a9060" opacity="0.6"/>
+              <!-- 木々 -->
+              <g fill="#2d6a4f">
+                <polygon points="20,80 30,80 25,55"/><polygon points="15,68 35,68 25,45"/>
+                <polygon points="170,75 182,75 176,50"/><polygon points="165,63 187,63 176,42"/>
+              </g>
+              <!-- 子供のシルエット -->
+              <circle cx="95" cy="118" r="6" fill="#f4c87a"/>
+              <rect x="92" y="124" width="6" height="10" fill="#f4c87a" opacity="0.8"/>
+            </svg>
+          </div>
+          <div class="spot-card-body">
+            <div class="spot-card-season">7月〜8月 夏季限定</div>
+            <h3 class="spot-card-title">嵯峨川 河川プール</h3>
+            <p class="spot-card-desc">
+              清流・嵯峨川の天然水が気持ちいい夏の遊泳スポット。
+              村の小中学校が指定する水泳場として地元に親しまれている。
+            </p>
+          </div>
+        </div>
+
+        <div class="spot-card animate-up">
+          <div class="spot-card-img spot-card-img-3">
+            <svg viewBox="0 0 200 180" width="200" height="180" xmlns="http://www.w3.org/2000/svg">
+              <!-- 夜空 -->
+              <rect width="200" height="180" fill="#1a1a3e"/>
+              <!-- 星々 -->
+              <g fill="white" opacity="0.9">
+                <circle cx="20" cy="20" r="1.5"/><circle cx="45" cy="35" r="2"/>
+                <circle cx="70" cy="15" r="1.5"/><circle cx="95" cy="28" r="2.5"/>
+                <circle cx="120" cy="12" r="1.5"/><circle cx="148" cy="22" r="2"/>
+                <circle cx="175" cy="8" r="1.5"/><circle cx="30" cy="55" r="1.5"/>
+                <circle cx="60" cy="48" r="2"/><circle cx="85" cy="60" r="1.5"/>
+                <circle cx="110" cy="45" r="2"/><circle cx="135" cy="58" r="1.5"/>
+                <circle cx="160" cy="42" r="2"/><circle cx="185" cy="55" r="1.5"/>
+                <circle cx="15" cy="80" r="1"/><circle cx="40" cy="75" r="1.5"/>
+                <circle cx="68" cy="85" r="1"/><circle cx="155" cy="75" r="1.5"/>
+                <circle cx="180" cy="82" r="1"/>
+              </g>
+              <!-- 天の川 -->
+              <path d="M0,40 Q100,20 200,50" stroke="rgba(255,255,255,0.15)" stroke-width="20" fill="none"/>
+              <!-- 月 -->
+              <circle cx="170" cy="35" r="20" fill="#f9e784" opacity="0.9"/>
+              <circle cx="163" cy="30" r="17" fill="#1a2850" opacity="0.3"/>
+              <!-- 山のシルエット -->
+              <polygon points="0,180 0,130 60,80 120,120 180,70 200,90 200,180" fill="#0d1b2a" opacity="0.9"/>
+              <!-- 望遠鏡のシルエット -->
+              <rect x="90" y="145" width="4" height="30" fill="#444"/>
+              <ellipse cx="92" cy="142" rx="10" ry="5" fill="#555" transform="rotate(-30, 92, 142)"/>
+            </svg>
+          </div>
+          <div class="spot-card-body">
+            <div class="spot-card-season">夏季 星空観測イベント開催</div>
+            <h3 class="spot-card-title">大川原高原 星空</h3>
+            <p class="spot-card-desc">
+              光害の少ない山頂で見上げる満天の星空。
+              ヒルトップハウスの天体望遠鏡で天体観測イベントも開催。
+            </p>
+          </div>
+        </div>
+
+        <div class="spot-card animate-up">
+          <div class="spot-card-img spot-card-img-4">
+            <svg viewBox="0 0 200 180" width="200" height="180" xmlns="http://www.w3.org/2000/svg">
+              <!-- 空 -->
+              <rect width="200" height="120" fill="#fce4b3" opacity="0.8"/>
+              <!-- 神社の建物 -->
+              <rect x="60" y="90" width="80" height="70" fill="#8B4513" opacity="0.9"/>
+              <!-- 屋根 -->
+              <polygon points="40,90 160,90 100,45" fill="#c0392b" opacity="0.9"/>
+              <polygon points="55,90 145,90 100,55" fill="#e74c3c" opacity="0.7"/>
+              <!-- 柱 -->
+              <rect x="65" y="95" width="8" height="65" fill="#6b3a2a"/>
+              <rect x="127" y="95" width="8" height="65" fill="#6b3a2a"/>
+              <!-- 扉 -->
+              <rect x="85" y="120" width="30" height="40" fill="#5d3a1a"/>
+              <circle cx="100" cy="138" r="3" fill="#f9c74f"/>
+              <!-- 鳥居 -->
+              <rect x="20" y="80" width="6" height="60" fill="#c0392b" opacity="0.8"/>
+              <rect x="168" y="80" width="6" height="60" fill="#c0392b" opacity="0.8"/>
+              <rect x="15" y="80" width="164" height="8" fill="#c0392b" opacity="0.8"/>
+              <rect x="18" y="92" width="158" height="5" fill="#c0392b" opacity="0.6"/>
+              <!-- 御神木 -->
+              <rect x="10" y="100" width="8" height="80" fill="#5d4037"/>
+              <circle cx="14" cy="95" r="20" fill="#2d6a4f" opacity="0.9"/>
+              <rect x="175" y="105" width="7" height="75" fill="#5d4037"/>
+              <circle cx="178" cy="98" r="17" fill="#2d6a4f" opacity="0.8"/>
+            </svg>
+          </div>
+          <div class="spot-card-body">
+            <div class="spot-card-season">10月第3日曜 例大祭</div>
+            <h3 class="spot-card-title">大宮神社</h3>
+            <p class="spot-card-desc">
+              村の総氏神として古くから崇敬される神社。
+              毎年10月には伝統の「神楽（かぐら）」が奉納され、村が賑わう。
+            </p>
+          </div>
+        </div>
+
+        <div class="spot-card animate-up">
+          <div class="spot-card-img spot-card-img-5">
+            <svg viewBox="0 0 200 180" width="200" height="180" xmlns="http://www.w3.org/2000/svg">
+              <!-- 空 -->
+              <rect width="200" height="100" fill="#f0e6d3" opacity="0.6"/>
+              <!-- 古民家 -->
+              <rect x="30" y="90" width="140" height="80" fill="#a0735a" opacity="0.9"/>
+              <!-- 大きな屋根（茅葺き） -->
+              <polygon points="10,90 190,90 100,35" fill="#4a3728" opacity="0.95"/>
+              <!-- 縁側 -->
+              <rect x="25" y="130" width="150" height="10" fill="#8B6347" opacity="0.7"/>
+              <!-- 障子 -->
+              <rect x="40" y="100" width="40" height="35" fill="#f8f0e0" opacity="0.9"/>
+              <line x1="60" y1="100" x2="60" y2="135" stroke="#ccc" stroke-width="1"/>
+              <line x1="40" y1="117" x2="80" y2="117" stroke="#ccc" stroke-width="1"/>
+              <rect x="90" y="100" width="40" height="35" fill="#f8f0e0" opacity="0.9"/>
+              <line x1="110" y1="100" x2="110" y2="135" stroke="#ccc" stroke-width="1"/>
+              <line x1="90" y1="117" x2="130" y2="117" stroke="#ccc" stroke-width="1"/>
+              <!-- 玄関 -->
+              <rect x="140" y="110" width="25" height="60" fill="#5d3a1a"/>
+              <!-- 庭の木 -->
+              <rect x="180" y="120" width="6" height="60" fill="#5d4037"/>
+              <circle cx="183" cy="112" r="15" fill="#2d6a4f" opacity="0.9"/>
+              <rect x="15" y="125" width="5" height="55" fill="#5d4037"/>
+              <circle cx="17" cy="118" r="12" fill="#2d6a4f" opacity="0.9"/>
+            </svg>
+          </div>
+          <div class="spot-card-body">
+            <div class="spot-card-season">通年 一棟貸し宿泊</div>
+            <h3 class="spot-card-title">千年乃宿 旧高木邸</h3>
+            <p class="spot-card-desc">
+              江戸時代の古民家を丸ごと一棟貸し切りで楽しめる高級宿。
+              歴史ある梁と障子が醸す、日本の原風景を体験できる。
+            </p>
+          </div>
+        </div>
+
+        <div class="spot-card animate-up">
+          <div class="spot-card-img spot-card-img-6">
+            <svg viewBox="0 0 200 180" width="200" height="180" xmlns="http://www.w3.org/2000/svg">
+              <!-- 明るい空 -->
+              <rect width="200" height="180" fill="#e8f5e9"/>
+              <!-- ジェラートショップ外観 -->
+              <rect x="40" y="70" width="120" height="90" fill="white" opacity="0.9"/>
+              <polygon points="30,70 170,70 100,30" fill="#52b788"/>
+              <!-- 看板 -->
+              <rect x="55" y="80" width="90" height="20" fill="#d8f3dc" rx="4"/>
+              <text x="70" y="94" font-size="8" fill="#2d6a4f" font-weight="bold">新家ジェラート</text>
+              <!-- ジェラート -->
+              <g transform="translate(100,130)">
+                <polygon points="-12,0 12,0 0,35" fill="#f9c74f" opacity="0.9"/>
+                <circle cx="0" cy="-8" r="16" fill="#ff9999" opacity="0.9"/>
+                <circle cx="0" cy="-8" r="10" fill="#ffb3b3" opacity="0.7"/>
+                <!-- すだちの緑 -->
+                <circle cx="12" cy="-18" r="12" fill="#52b788" opacity="0.9"/>
+                <circle cx="12" cy="-18" r="8" fill="#74c69d" opacity="0.7"/>
+              </g>
+              <!-- 特産品テーブル -->
+              <rect x="45" y="145" width="110" height="8" fill="#a0735a" opacity="0.5"/>
+              <!-- イチゴ -->
+              <g opacity="0.8" transform="translate(60, 130)">
+                <polygon points="0,0 10,0 5,15" fill="#c0392b"/>
+                <polygon points="2,0 8,0 5,-8" fill="#52b788" opacity="0.9"/>
+              </g>
+              <g opacity="0.8" transform="translate(80, 132)">
+                <polygon points="0,0 9,0 4.5,14" fill="#e74c3c"/>
+                <polygon points="1,0 8,0 4.5,-7" fill="#52b788" opacity="0.9"/>
+              </g>
+            </svg>
+          </div>
+          <div class="spot-card-body">
+            <div class="spot-card-season">通年営業 地域交流拠点</div>
+            <h3 class="spot-card-title">新家（にや）ジェラート</h3>
+            <p class="spot-card-desc">
+              さくらももいちご・すだち・達磨キウイなど村の特産品を使った
+              オリジナルジェラートが味わえる地域交流拠点。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 特産品セクション -->
+  <section class="products" id="products">
+    <div class="section-inner">
+      <span class="section-tag animate-up">Special Products</span>
+      <h2 class="section-title animate-up">村が育てた、極上の恵み。</h2>
+      <p class="section-desc animate-up">
+        山の寒暖差と清らかな水が育む、世界でここだけの特産品たち。
+      </p>
+
+      <div class="products-grid">
+        <div class="product-card animate-up">
+          <div class="product-photo" style="background-image: url('https://www.vill.sanagochi.lg.jp/docs/2020031600015/file_contents/sakuramomoichigo_01.jpg');"></div>
+          <div class="product-card-body">
+            <span class="product-icon">🍓</span>
+            <div class="product-name">さくらももいちご</div>
+            <div class="product-highlight">初競り価格10万円超</div>
+            <p class="product-desc">
+              村内約20軒の限定農家のみが栽培する幻のいちご。
+              収穫まで1年以上かける丁寧な栽培と、山の寒暖差が生み出す
+              「爽やかで上品な甘み」は全国最高峰の評価を受ける。
+              1992年にJAと協力して生まれたブランドが2008年に「さくらもも」として昇華。
+            </p>
+          </div>
+        </div>
+
+        <div class="product-card animate-up">
+          <div class="product-photo" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/3/33/%E3%81%99%E3%81%A0%E3%81%A1.jpg');"></div>
+          <div class="product-card-body">
+            <span class="product-icon">🍋</span>
+            <div class="product-name">すだち</div>
+            <div class="product-highlight">徳島県内有数の産地</div>
+            <p class="product-desc">
+              村の木にも指定されているすだち。
+              ハウス・露地・冷蔵貯蔵を組み合わせた通年出荷体制を確立しており、
+              徳島を代表する香酸柑橘として年間を通じて全国に届けられる。
+            </p>
+          </div>
+        </div>
+
+        <div class="product-card animate-up">
+          <div class="product-photo" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Kiwi_%28Actinidia_chinensis%29_1_Luc_Viatour.jpg/640px-Kiwi_%28Actinidia_chinensis%29_1_Luc_Viatour.jpg');"></div>
+          <div class="product-card-body">
+            <span class="product-icon">🥝</span>
+            <div class="product-name">達磨キウイ</div>
+            <div class="product-highlight">糖度14〜17度の極甘</div>
+            <p class="product-desc">
+              だるまのような丸みを帯びた独自品種のキウイ。
+              糖度14〜17度という驚きの甘さを誇り、ギフトとして人気が高い。
+              オーナー制度により都市部の人々と農家をつなぐ交流も生まれている。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ゲームCTA -->
+  <section class="game-cta">
+    <div class="game-cta-content">
+      <span class="game-cta-emoji">🎮</span>
+      <h2 class="game-cta-title">ゲームで村を探検しよう！</h2>
+      <p class="game-cta-desc">
+        大川原高原、嵯峨川、大宮神社、いちご農園…<br>
+        佐那河内村の7つのスポットを歩いて発見する<br>
+        オリジナル探索ゲームを体験しよう。
+      </p>
+      <a href="../game/index.html" class="btn-game">
+        <span>🌿</span>
+        <span>村を探索する</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 移住情報セクション -->
+  <section class="migrate" id="migrate">
+    <div class="section-inner">
+      <div class="migrate-grid">
+        <div>
+          <span class="section-tag animate-up">Migration Info</span>
+          <h2 class="section-title animate-up">
+            「便利な田舎」で、<br>新しい暮らしを。
+          </h2>
+          <p class="section-desc animate-up">
+            徳島市から20〜30分という通勤圏にありながら、
+            豊かな自然と濃密なコミュニティが手に入る佐那河内村。
+            手厚いサポートで移住をバックアップします。
+          </p>
+
+          <ul class="migrate-list">
+            <li class="migrate-item animate-up">
+              <span class="migrate-item-icon">🏠</span>
+              <div class="migrate-item-text">
+                <h4>住宅補助最大400万円</h4>
+                <p>新築・取得に対して最大400万円の補助。子育て世帯など条件により加算あり。</p>
+              </div>
+            </li>
+            <li class="migrate-item animate-up">
+              <span class="migrate-item-icon">🎓</span>
+              <div class="migrate-item-text">
+                <h4>高校卒業まで医療費無料</h4>
+                <p>18歳まで医療費を全額助成。英語・ICT教育を取り入れた小中一貫校も完備。</p>
+              </div>
+            </li>
+            <li class="migrate-item animate-up">
+              <span class="migrate-item-icon">🏘</span>
+              <div class="migrate-item-text">
+                <h4>SANAGOCHILL古民家プロジェクト</h4>
+                <p>耐震改修された古民家を移住者の住まいとして提供。産学連携の取り組み。</p>
+              </div>
+            </li>
+            <li class="migrate-item animate-up">
+              <span class="migrate-item-icon">🚁</span>
+              <div class="migrate-item-text">
+                <h4>ドローン配送・スマート物流</h4>
+                <p>買い物の利便性向上へ。ドローン配送の実証実験や地域内共同配送を推進中。</p>
+              </div>
+            </li>
+            <li class="migrate-item animate-up">
+              <span class="migrate-item-icon">🤝</span>
+              <div class="migrate-item-text">
+                <h4>常会コミュニティへの参加サポート</h4>
+                <p>1,000年続く住民自治「常会」。移住コーディネーターが地域行事への参加を丁寧にサポート。</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="migrate-visual animate-up">
+          <div class="migrate-visual-title">📍 アクセス</div>
+          <div class="access-grid">
+            <div class="access-card">
+              <div class="access-card-icon">🚗</div>
+              <div class="access-card-title">徳島市中心部</div>
+              <div class="access-card-time">20<span class="access-card-unit">〜30分</span></div>
+            </div>
+            <div class="access-card">
+              <div class="access-card-icon">✈</div>
+              <div class="access-card-title">徳島阿波おどり空港</div>
+              <div class="access-card-time">30<span class="access-card-unit">〜40分</span></div>
+            </div>
+            <div class="access-card">
+              <div class="access-card-icon">🏛</div>
+              <div class="access-card-title">徳島県庁</div>
+              <div class="access-card-time">25<span class="access-card-unit">分</span></div>
+            </div>
+            <div class="access-card">
+              <div class="access-card-icon">🌿</div>
+              <div class="access-card-title">大川原高原</div>
+              <div class="access-card-time">40<span class="access-card-unit">分</span></div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem; padding: 1rem; background: white; border-radius: 12px;">
+            <div style="font-weight:700; color: var(--green-deep); margin-bottom: 0.6rem;">🌐 関連リンク</div>
+            <div style="display:flex; flex-direction:column; gap:0.4rem;">
+              <a href="https://www.vill.sanagochi.lg.jp/" target="_blank" rel="noopener" style="font-size:0.83rem; color: var(--green-bright); display:flex; align-items:center; gap:0.4rem;">
+                📋 佐那河内村公式サイト
+              </a>
+              <a href="https://sanagochill.jp/" target="_blank" rel="noopener" style="font-size:0.83rem; color: var(--green-bright); display:flex; align-items:center; gap:0.4rem;">
+                🏘 SANAGOCHILL（移住情報）
+              </a>
+              <a href="https://sanagochi.foundation/" target="_blank" rel="noopener" style="font-size:0.83rem; color: var(--green-bright); display:flex; align-items:center; gap:0.4rem;">
+                🤝 一般財団法人さなごうち
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- フッター -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-name">🌿 佐那河内村 / Sanagochi Village</div>
+          <p class="footer-brand-desc">
+            徳島県名東郡佐那河内村。<br>
+            山と清流と1,000年の歴史。<br>
+            便利な田舎で、豊かな暮らしを。
+          </p>
+        </div>
+        <div>
+          <div class="footer-col-title">EXPLORE</div>
+          <ul class="footer-col-links">
+            <li><a href="#about">村について</a></li>
+            <li><a href="#spots">観光スポット</a></li>
+            <li><a href="#products">特産品</a></li>
+            <li><a href="#migrate">移住情報</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">LINKS</div>
+          <ul class="footer-col-links">
+            <li><a href="../game/index.html">🎮 探索ゲーム</a></li>
+            <li><a href="https://www.vill.sanagochi.lg.jp/" target="_blank" rel="noopener">公式サイト</a></li>
+            <li><a href="https://sanagochill.jp/" target="_blank" rel="noopener">SANAGOCHILL</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2025 佐那河内村 リブランディングプロジェクト</div>
+        <div>Sanagochi Village, Tokushima, Japan</div>
+        <div style="font-size:0.7rem; opacity:0.5; margin-top:0.3rem;">写真提供: Wikimedia Commons (CC BY-SA), Discover Tokushima, 佐那河内村公式サイト</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

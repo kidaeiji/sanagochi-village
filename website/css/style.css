@@ -1,0 +1,707 @@
+/* ===================================
+   佐那河内村 リブランディングサイト
+   自然・グリーン系デザイン
+   =================================== */
+
+:root {
+  --green-deep:   #1b4332;
+  --green-mid:    #2d6a4f;
+  --green-bright: #40916c;
+  --green-light:  #52b788;
+  --green-soft:   #95d5b2;
+  --green-pale:   #d8f3dc;
+  --green-ghost:  #f0faf2;
+  --earth:        #6b4226;
+  --earth-light:  #a0735a;
+  --sky:          #b7e4f9;
+  --sky-deep:     #74c0e8;
+  --sun:          #f9c74f;
+  --cream:        #fefae0;
+  --white:        #ffffff;
+  --text-dark:    #1b4332;
+  --text-mid:     #2d6a4f;
+  --text-light:   #52b788;
+  --shadow:       rgba(27, 67, 50, 0.15);
+}
+
+/* リセット */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+  color: var(--text-dark);
+  background: var(--white);
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ===================================
+   ナビゲーション
+   =================================== */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(82, 183, 136, 0.2);
+  transition: box-shadow 0.3s;
+}
+.nav.scrolled { box-shadow: 0 2px 20px var(--shadow); }
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.nav-logo-icon {
+  width: 36px; height: 36px;
+  background: var(--green-mid);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+}
+.nav-logo-text {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--green-deep);
+  letter-spacing: 0.05em;
+}
+.nav-logo-sub {
+  font-size: 0.65rem;
+  color: var(--green-bright);
+  letter-spacing: 0.1em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 100%;
+  height: 2px;
+  background: var(--green-bright);
+  transition: right 0.3s;
+}
+.nav-links a:hover { color: var(--green-bright); }
+.nav-links a:hover::after { right: 0; }
+
+.nav-game-btn {
+  background: var(--green-mid);
+  color: white !important;
+  padding: 0.5rem 1.2rem;
+  border-radius: 100px;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  transition: background 0.2s, transform 0.2s !important;
+}
+.nav-game-btn:hover { background: var(--green-deep) !important; transform: translateY(-1px); }
+
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+}
+.nav-hamburger span {
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--green-mid);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* ===================================
+   ヒーローセクション
+   =================================== */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      rgba(27,67,50,0.45) 0%,
+      rgba(27,67,50,0.2) 40%,
+      rgba(27,67,50,0.55) 100%),
+    url('https://upload.wikimedia.org/wikipedia/commons/8/8d/%E5%A4%A7%E5%B7%9D%E5%8E%9F%E9%AB%98%E5%8E%9F_-_panoramio.jpg') center / cover no-repeat;
+}
+
+/* 山のシルエット（SVG） */
+.hero-mountains {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 55%;
+}
+
+/* 雲 */
+.hero-cloud {
+  position: absolute;
+  background: rgba(255,255,255,0.7);
+  border-radius: 50px;
+  animation: float-cloud linear infinite;
+}
+.hero-cloud::before, .hero-cloud::after {
+  content: '';
+  position: absolute;
+  background: rgba(255,255,255,0.7);
+  border-radius: 50%;
+}
+.hero-cloud-1 { width: 120px; height: 35px; top: 20%; left: -150px; animation-duration: 40s; animation-delay: 0s; }
+.hero-cloud-1::before { width: 60px; height: 60px; top: -25px; left: 15px; }
+.hero-cloud-1::after  { width: 40px; height: 40px; top: -18px; left: 55px; }
+.hero-cloud-2 { width: 90px; height: 28px; top: 30%; left: -120px; animation-duration: 55s; animation-delay: -20s; opacity: 0.8; }
+.hero-cloud-2::before { width: 45px; height: 45px; top: -18px; left: 12px; }
+.hero-cloud-2::after  { width: 30px; height: 30px; top: -13px; left: 42px; }
+.hero-cloud-3 { width: 150px; height: 40px; top: 15%; left: -180px; animation-duration: 65s; animation-delay: -35s; opacity: 0.6; }
+.hero-cloud-3::before { width: 70px; height: 70px; top: -30px; left: 20px; }
+.hero-cloud-3::after  { width: 50px; height: 50px; top: -22px; left: 70px; }
+
+@keyframes float-cloud {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(100vw + 200px)); }
+}
+
+/* 木々のシルエット */
+.hero-trees {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 30%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  color: white;
+  padding: 0 1.5rem;
+  animation: fade-up 1s ease both;
+}
+.hero-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  padding: 0.4rem 1.2rem;
+  border-radius: 100px;
+  margin-bottom: 1.5rem;
+}
+.hero-title {
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  margin-bottom: 0.5rem;
+}
+.hero-title-en {
+  font-size: clamp(1rem, 3vw, 1.6rem);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  opacity: 0.9;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+.hero-subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  font-weight: 400;
+  opacity: 0.9;
+  line-height: 1.7;
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+}
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  background: white;
+  color: var(--green-deep);
+  padding: 0.85rem 2rem;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+.btn-outline {
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(255,255,255,0.7);
+  padding: 0.85rem 2rem;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-outline:hover { background: rgba(255,255,255,0.15); transform: translateY(-3px); }
+
+.hero-scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  opacity: 0.8;
+  animation: bounce 2s ease infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+.hero-scroll::after {
+  content: '';
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.6);
+  animation: line-grow 2s ease infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-8px); }
+}
+@keyframes line-grow {
+  0% { opacity: 0; height: 0; }
+  50% { opacity: 1; height: 40px; }
+  100% { opacity: 0; height: 40px; }
+}
+
+/* ===================================
+   数字セクション（インパクト指標）
+   =================================== */
+.stats {
+  background: var(--green-deep);
+  padding: 3rem 2rem;
+}
+.stats-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  text-align: center;
+}
+.stat-item { color: white; }
+.stat-num {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  color: var(--green-soft);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.stat-unit { font-size: 1rem; }
+.stat-label { font-size: 0.8rem; opacity: 0.8; letter-spacing: 0.05em; line-height: 1.4; }
+
+/* ===================================
+   セクション共通
+   =================================== */
+section { padding: 6rem 2rem; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-tag {
+  display: inline-block;
+  background: var(--green-pale);
+  color: var(--green-mid);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  color: var(--green-deep);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+.section-desc {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #4a7060;
+  max-width: 600px;
+  margin-bottom: 3rem;
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.animate-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===================================
+   村について
+   =================================== */
+.about { background: var(--green-ghost); }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+.about-visual {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/1b/Sanagochivillage_Kami_%E5%A4%A7%E9%BB%92_Tokushimapref.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  aspect-ratio: 4/3;
+  background: linear-gradient(135deg, #40916c, #52b788, #95d5b2, #b7e4f9);
+  box-shadow: 0 20px 60px var(--shadow);
+}
+.about-visual-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+}
+/* about写真使用時にSVGイラストを非表示 */
+.about-visual-inner svg { display: none; }
+.about-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+.badge {
+  background: var(--green-pale);
+  color: var(--green-mid);
+  padding: 0.4rem 0.9rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid var(--green-soft);
+}
+
+/* ===================================
+   観光スポット
+   =================================== */
+.spots { background: white; }
+.spots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.spot-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--green-ghost);
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: default;
+}
+.spot-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px var(--shadow);
+}
+.spot-card-img {
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.spot-card-img-1 {
+  background: url('https://discovertokushima.net/en/wp-content/uploads/sites/2/2022/09/a0b72f31506d6e8938f217cb073b0df7-960x620.jpg') center / cover no-repeat;
+}
+.spot-card-img-2 {
+  background: url('https://yousakana.jp/wp-content/uploads/2017/07/saga-river01-1024x683.jpg') center / cover no-repeat;
+}
+.spot-card-img-3 {
+  background:
+    linear-gradient(180deg, rgba(5,5,20,0.25) 0%, rgba(5,5,20,0.1) 100%),
+    url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg/640px-Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg') center / cover no-repeat;
+}
+.spot-card-img-4 {
+  background: url('https://www.vill.sanagochi.lg.jp/docs/2012120400125/file_contents/ohmiyazinja01.jpg') center / cover no-repeat;
+}
+.spot-card-img-5 {
+  background: url('https://upload.wikimedia.org/wikipedia/commons/e/e8/Hakogike_house01.jpg') center / cover no-repeat;
+}
+.spot-card-img-6 {
+  background: url('https://upload.wikimedia.org/wikipedia/commons/4/47/CafeMia.jpg') center / cover no-repeat;
+}
+/* 写真表示時はSVGイラストを非表示 */
+.spot-card-img svg { display: none; }
+.spot-card-body { padding: 1.2rem 1.4rem; }
+.spot-card-season {
+  font-size: 0.72rem;
+  color: var(--green-bright);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.4rem;
+}
+.spot-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--green-deep);
+  margin-bottom: 0.5rem;
+}
+.spot-card-desc { font-size: 0.85rem; color: #4a7060; line-height: 1.6; }
+
+/* ===================================
+   特産品
+   =================================== */
+.products { background: var(--green-ghost); }
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+.product-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 0;
+  text-align: center;
+  box-shadow: 0 4px 20px var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.product-card:hover { transform: translateY(-6px); box-shadow: 0 16px 50px var(--shadow); }
+.product-card-body { padding: 1.5rem 2rem 2rem; }
+.product-photo {
+  width: 100%;
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.product-photo::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  background: linear-gradient(transparent, white);
+}
+.product-icon {
+  font-size: 3rem;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+.product-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--green-deep);
+  margin-bottom: 0.5rem;
+}
+.product-highlight {
+  display: inline-block;
+  background: #fff3cd;
+  color: #856404;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  margin-bottom: 0.8rem;
+}
+.product-desc { font-size: 0.85rem; color: #4a7060; line-height: 1.6; }
+
+/* ===================================
+   ゲームCTA
+   =================================== */
+.game-cta {
+  background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-mid) 50%, var(--green-bright) 100%);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 6rem 2rem;
+}
+.game-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(149,213,178,0.2) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(183,228,249,0.2) 0%, transparent 50%);
+}
+.game-cta-content { position: relative; z-index: 1; }
+.game-cta-emoji { font-size: 4rem; margin-bottom: 1rem; display: block; }
+.game-cta-title {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900;
+  color: white;
+  margin-bottom: 1rem;
+}
+.game-cta-desc {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.7;
+  max-width: 500px;
+  margin: 0 auto 2rem;
+}
+.btn-game {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: white;
+  color: var(--green-deep);
+  padding: 1rem 2.5rem;
+  border-radius: 100px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+}
+.btn-game:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 16px 50px rgba(0,0,0,0.35); }
+
+/* ===================================
+   移住情報
+   =================================== */
+.migrate { background: white; }
+.migrate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+.migrate-list { list-style: none; display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.5rem; }
+.migrate-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.2rem 1.4rem;
+  background: var(--green-ghost);
+  border-radius: 12px;
+  border-left: 4px solid var(--green-bright);
+  transition: transform 0.2s;
+}
+.migrate-item:hover { transform: translateX(6px); }
+.migrate-item-icon { font-size: 1.4rem; flex-shrink: 0; }
+.migrate-item-text h4 { font-size: 0.95rem; font-weight: 700; color: var(--green-deep); margin-bottom: 0.2rem; }
+.migrate-item-text p { font-size: 0.82rem; color: #4a7060; line-height: 1.5; }
+.migrate-visual {
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--green-pale), var(--sky));
+  padding: 2.5rem;
+  box-shadow: 0 10px 40px var(--shadow);
+}
+.migrate-visual-title {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--green-deep);
+  margin-bottom: 1.5rem;
+}
+.access-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.access-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+.access-card-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+.access-card-title { font-size: 0.8rem; font-weight: 700; color: var(--green-deep); margin-bottom: 0.2rem; }
+.access-card-time { font-size: 1.1rem; font-weight: 900; color: var(--green-bright); }
+.access-card-unit { font-size: 0.7rem; color: #4a7060; }
+
+/* ===================================
+   フッター
+   =================================== */
+.footer {
+  background: var(--green-deep);
+  color: rgba(255,255,255,0.85);
+  padding: 3rem 2rem 1.5rem;
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 1.5rem;
+}
+.footer-brand-name { font-size: 1.1rem; font-weight: 800; color: white; margin-bottom: 0.5rem; }
+.footer-brand-desc { font-size: 0.82rem; line-height: 1.7; opacity: 0.7; }
+.footer-col-title { font-size: 0.8rem; font-weight: 700; color: var(--green-soft); letter-spacing: 0.1em; margin-bottom: 1rem; }
+.footer-col-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-col-links a { font-size: 0.83rem; opacity: 0.7; transition: opacity 0.2s; }
+.footer-col-links a:hover { opacity: 1; }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
+
+/* ===================================
+   レスポンシブ
+   =================================== */
+@media (max-width: 900px) {
+  .stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .about-grid { grid-template-columns: 1fr; }
+  .spots-grid { grid-template-columns: repeat(2, 1fr); }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+  .migrate-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .spots-grid { grid-template-columns: 1fr; }
+  .products-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+}

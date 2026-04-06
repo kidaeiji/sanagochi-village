@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>佐那河内村 探索ゲーム | Sanagochi Explorer</title>
+  <style>
+    :root {
+      --green-deep: #1b4332;
+      --green-mid: #2d6a4f;
+      --green-bright: #40916c;
+      --green-light: #52b788;
+      --green-soft: #95d5b2;
+      --green-pale: #d8f3dc;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      background: #0d1f14;
+      font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    /* タイトル画面 */
+    #title-screen {
+      position: fixed; inset: 0;
+      background: linear-gradient(160deg, #0d2b1a 0%, #1b4332 40%, #2d6a4f 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 100;
+      text-align: center;
+      padding: 2rem;
+    }
+    .title-village {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 900;
+      color: #95d5b2;
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 40px rgba(149,213,178,0.4);
+      margin-bottom: 0.3rem;
+    }
+    .title-sub {
+      font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.2em;
+      margin-bottom: 0.5rem;
+    }
+    .title-game {
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 700;
+      color: #f9c74f;
+      margin-bottom: 2rem;
+    }
+    .title-desc {
+      font-size: clamp(0.82rem, 2vw, 1rem);
+      color: rgba(255,255,255,0.75);
+      line-height: 1.9;
+      max-width: 420px;
+      margin-bottom: 2.5rem;
+    }
+    .title-spots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      max-width: 400px;
+      margin-bottom: 2.5rem;
+    }
+    .title-spot-chip {
+      background: rgba(149,213,178,0.15);
+      border: 1px solid rgba(149,213,178,0.3);
+      color: #95d5b2;
+      font-size: 0.75rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+    }
+    #start-btn {
+      background: #f9c74f;
+      color: #1b4332;
+      border: none;
+      padding: 1rem 3rem;
+      font-size: 1.1rem;
+      font-weight: 800;
+      border-radius: 100px;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      box-shadow: 0 8px 30px rgba(249,199,79,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #start-btn:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 40px rgba(249,199,79,0.5); }
+    .title-controls {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.08em;
+    }
+    .title-back-link {
+      margin-top: 1.2rem;
+      font-size: 0.8rem;
+      color: rgba(149,213,178,0.6);
+      cursor: pointer;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+    .title-back-link:hover { color: #95d5b2; }
+
+    /* ゲーム画面 */
+    #game-wrap {
+      position: fixed; inset: 0;
+      display: none;
+      flex-direction: column;
+    }
+
+    /* HUD */
+    #hud {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(13,27,20,0.85) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    #hud-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #95d5b2;
+      letter-spacing: 0.1em;
+    }
+    #hud-progress {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.8);
+      font-weight: 600;
+    }
+    #progress-bar-wrap {
+      position: absolute;
+      top: 48px; left: 1rem; right: 1rem;
+      height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #52b788, #f9c74f);
+      border-radius: 2px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+
+    /* ミニマップ */
+    #minimap {
+      position: absolute;
+      top: 60px; right: 12px;
+      z-index: 50;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      border: 2px solid rgba(149,213,178,0.3);
+    }
+
+    /* Canvas */
+    #game-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* スポット情報パネル */
+    #spot-panel {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 60;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #spot-panel.open { transform: translateY(0); }
+    #spot-panel-inner {
+      background: white;
+      border-radius: 20px 20px 0 0;
+      padding: 1.5rem 1.5rem 2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      box-shadow: 0 -8px 40px rgba(27,67,50,0.25);
+    }
+    #spot-panel-handle {
+      width: 40px; height: 4px;
+      background: #ddd;
+      border-radius: 2px;
+      margin: 0 auto 1.2rem;
+    }
+    #spot-panel-emoji { font-size: 2.5rem; margin-bottom: 0.6rem; display: block; text-align: center; }
+    #spot-panel-tag {
+      display: inline-block;
+      background: var(--green-pale);
+      color: var(--green-mid);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.25rem 0.8rem;
+      border-radius: 100px;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.7rem;
+    }
+    #spot-panel-name {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--green-deep);
+      margin-bottom: 0.8rem;
+    }
+    #spot-panel-desc {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: #4a7060;
+      margin-bottom: 1rem;
+    }
+    #spot-panel-fact {
+      background: var(--green-pale);
+      border-left: 4px solid var(--green-bright);
+      border-radius: 0 8px 8px 0;
+      padding: 0.8rem 1rem;
+      font-size: 0.82rem;
+      color: var(--green-deep);
+      line-height: 1.6;
+      margin-bottom: 1.2rem;
+    }
+    #spot-panel-fact strong { color: var(--green-mid); }
+    #spot-close {
+      width: 100%;
+      background: var(--green-mid);
+      color: white;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+    }
+    #spot-close:hover { background: var(--green-deep); }
+
+    /* クリア画面 */
+    #clear-screen {
+      position: fixed; inset: 0;
+      background: rgba(13,27,20,0.95);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .clear-emoji { font-size: 4rem; margin-bottom: 1rem; }
+    .clear-title {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 900;
+      color: #f9c74f;
+      margin-bottom: 0.8rem;
+      text-shadow: 0 0 30px rgba(249,199,79,0.5);
+    }
+    .clear-sub {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+    .clear-spots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      justify-content: center;
+      max-width: 400px;
+      margin-bottom: 2rem;
+    }
+    .clear-spot-chip {
+      background: rgba(149,213,178,0.2);
+      border: 1px solid rgba(149,213,178,0.5);
+      color: #95d5b2;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+    }
+    .clear-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .clear-btn {
+      padding: 0.85rem 2rem;
+      border-radius: 100px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.2s;
+      letter-spacing: 0.05em;
+    }
+    .clear-btn:hover { transform: translateY(-2px); }
+    .clear-btn-primary { background: #f9c74f; color: #1b4332; }
+    .clear-btn-outline { background: transparent; color: #95d5b2; border: 2px solid rgba(149,213,178,0.5); }
+
+    /* モバイル操作パッド */
+    #dpad {
+      position: absolute;
+      bottom: 24px; left: 24px;
+      z-index: 55;
+      display: none;
+    }
+    .dpad-btn {
+      position: absolute;
+      width: 52px; height: 52px;
+      background: rgba(255,255,255,0.18);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: background 0.1s;
+      touch-action: none;
+    }
+    .dpad-btn:active, .dpad-btn.pressed { background: rgba(149,213,178,0.4); }
+    #dpad-up    { top: 0;   left: 56px; }
+    #dpad-down  { top: 112px; left: 56px; }
+    #dpad-left  { top: 56px; left: 0; }
+    #dpad-right { top: 56px; left: 112px; }
+
+    /* スポット発見トースト */
+    #discover-toast {
+      position: absolute;
+      top: 70px; left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: rgba(27,67,50,0.92);
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border-radius: 100px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 55;
+      pointer-events: none;
+      border: 1px solid rgba(149,213,178,0.4);
+    }
+    #discover-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* 近くにスポットがある時のヒント */
+    #nearby-hint {
+      position: absolute;
+      bottom: 120px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(249,199,79,0.9);
+      color: #1b4332;
+      padding: 0.5rem 1.2rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      z-index: 55;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      animation: pulse-hint 1.5s ease infinite;
+    }
+    #nearby-hint.show { opacity: 1; }
+    @keyframes pulse-hint {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.05); }
+    }
+
+    /* ===== バトル画面 (ドラクエ風) ===== */
+    #battle-screen {
+      position: fixed; inset: 0;
+      z-index: 150;
+      display: none;
+      flex-direction: column;
+      background: #0a0a1a;
+      font-family: 'Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',monospace;
+    }
+    #battle-screen.active { display: flex; }
+
+    /* 上部：バトル背景 */
+    #battle-bg {
+      flex: 1;
+      position: relative;
+      background: linear-gradient(180deg, #0f0f2e 0%, #1a1a3a 50%, #2a2a1a 100%);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* 星 */
+    #battle-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, white, transparent),
+        radial-gradient(1px 1px at 30% 10%, white, transparent),
+        radial-gradient(1px 1px at 50% 30%, white, transparent),
+        radial-gradient(1.5px 1.5px at 70% 15%, white, transparent),
+        radial-gradient(1px 1px at 90% 25%, white, transparent),
+        radial-gradient(1px 1px at 20% 40%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 60% 5%, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1.5px 1.5px at 85% 40%, white, transparent);
+      opacity: 0.6;
+    }
+    /* 地面ライン */
+    #battle-bg::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 35%;
+      background: linear-gradient(180deg, transparent 0%, #1a3020 60%, #0f2010 100%);
+    }
+
+    /* 敵エリア */
+    #battle-enemy-area {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    #battle-enemy-sprite {
+      font-size: clamp(4rem, 15vw, 7rem);
+      filter: drop-shadow(0 0 20px rgba(255,200,100,0.3));
+      animation: enemy-float 2s ease-in-out infinite;
+      position: relative;
+    }
+    @keyframes enemy-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    #battle-enemy-sprite.shake {
+      animation: enemy-shake 0.4s ease;
+    }
+    @keyframes enemy-shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-12px); }
+      40% { transform: translateX(12px); }
+      60% { transform: translateX(-8px); }
+      80% { transform: translateX(8px); }
+    }
+    #battle-enemy-sprite.dead {
+      animation: enemy-die 0.6s ease forwards;
+    }
+    @keyframes enemy-die {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2) rotate(10deg); filter: brightness(3) sepia(1) hue-rotate(30deg); }
+      100% { transform: scale(0) rotate(20deg); opacity: 0; }
+    }
+    #battle-enemy-name {
+      font-size: clamp(0.8rem, 2.5vw, 1rem);
+      font-weight: 700;
+      color: #f0e0a0;
+      letter-spacing: 0.1em;
+    }
+    #battle-enemy-hp-bar-wrap {
+      width: min(240px, 60vw);
+      height: 12px;
+      background: #333;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #555;
+    }
+    #battle-enemy-hp-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #e63946, #f4a261);
+      border-radius: 6px;
+      transition: width 0.4s ease;
+    }
+    #battle-enemy-hp-text {
+      font-size: 0.75rem;
+      color: #ccc;
+      letter-spacing: 0.05em;
+    }
+
+    /* 下部：UIエリア */
+    #battle-ui {
+      background: #0d0d20;
+      border-top: 2px solid #3a3a5a;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    /* メッセージウィンドウ */
+    #battle-msg-win {
+      border-bottom: 2px solid #3a3a5a;
+      padding: 0.8rem 1.2rem;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+    }
+    #battle-msg {
+      font-size: clamp(0.85rem, 2.5vw, 1rem);
+      color: #f0e8c0;
+      line-height: 1.6;
+      letter-spacing: 0.05em;
+      white-space: pre-wrap;
+    }
+    #battle-cursor {
+      display: inline-block;
+      color: #f9c74f;
+      animation: blink 0.8s step-end infinite;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* コマンド＋プレイヤーステータス */
+    #battle-bottom {
+      display: flex;
+      gap: 0;
+    }
+
+    /* コマンドウィンドウ */
+    #battle-cmd-win {
+      flex: 1;
+      border-right: 2px solid #3a3a5a;
+      padding: 0.8rem 1rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    .battle-cmd {
+      background: #1a1a30;
+      border: 2px solid #4a4a6a;
+      border-radius: 8px;
+      color: #f0e8c0;
+      font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+      font-weight: 700;
+      padding: 0.6rem 0.5rem;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      text-align: center;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      font-family: inherit;
+    }
+    .battle-cmd:hover:not(:disabled) {
+      background: #2a2a4a;
+      border-color: #f9c74f;
+      transform: scale(1.03);
+    }
+    .battle-cmd:disabled { opacity: 0.35; cursor: default; }
+    .battle-cmd.selected { background: #2a2a4a; border-color: #f9c74f; }
+    #battle-cmd-win.hidden, #battle-spell-win.hidden { display: none; }
+
+    /* 呪文サブメニュー */
+    #battle-spell-win {
+      flex: 1;
+      border-right: 2px solid #3a3a5a;
+      padding: 0.8rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .battle-spell {
+      background: #1a1a30;
+      border: 2px solid #4a4a6a;
+      border-radius: 8px;
+      color: #a0d0ff;
+      font-size: clamp(0.78rem, 2vw, 0.9rem);
+      font-weight: 700;
+      padding: 0.55rem 0.8rem;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: background 0.15s, transform 0.1s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: inherit;
+    }
+    .battle-spell:hover:not(:disabled) { background: #2a2a4a; transform: scale(1.02); }
+    .battle-spell:disabled { opacity: 0.35; cursor: default; }
+    .battle-spell .mp-cost { font-size: 0.7rem; color: #80aadd; }
+    #battle-spell-back {
+      background: #1a1a30;
+      border: 2px solid #5a5a5a;
+      border-radius: 8px;
+      color: #aaa;
+      font-size: 0.8rem;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    #battle-spell-back:hover { background: #222; }
+
+    /* プレイヤーステータス */
+    #battle-player-stat {
+      width: min(180px, 40vw);
+      padding: 0.8rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    #battle-player-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #f0e8c0;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.2rem;
+    }
+    .stat-row { display: flex; align-items: center; gap: 0.5rem; }
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #f9c74f;
+      width: 22px;
+      letter-spacing: 0.05em;
+    }
+    .stat-bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: #333;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    #player-hp-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #52b788, #95d5b2);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+    #player-mp-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4a90d9, #74c0e8);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+    .stat-val {
+      font-size: 0.7rem;
+      color: #ccc;
+      white-space: nowrap;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* バトル開始フラッシュ */
+    @keyframes battle-flash {
+      0% { opacity: 0; }
+      30% { opacity: 1; }
+      70% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    #battle-flash {
+      position: fixed; inset: 0;
+      background: white;
+      z-index: 300;
+      pointer-events: none;
+      opacity: 0;
+    }
+    #battle-flash.flash { animation: battle-flash 0.5s ease forwards; }
+
+    /* パーティメンバーブロック */
+    .party-member-block {
+      padding: 0.3rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .party-member-block:last-child { border-bottom: none; }
+    .party-name {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #f0e8c0;
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.04em;
+    }
+    .party-name.ko { color: #666; text-decoration: line-through; }
+    #battle-player-stat {
+      width: min(190px, 42vw);
+      padding: 0.6rem 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    /* HUD HP/MP */
+    #hud-stats {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .hud-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.9);
+      font-weight: 600;
+    }
+    .hud-stat-label { color: #f9c74f; letter-spacing: 0.05em; }
+    .hud-stat-val { color: #95d5b2; }
+  </style>
+</head>
+<body>
+
+<!-- タイトル画面 -->
+<div id="title-screen">
+  <div class="title-village">佐那河内村</div>
+  <div class="title-sub">SANAGOCHI VILLAGE — TOKUSHIMA</div>
+  <div class="title-game">🌿 探索ゲーム</div>
+  <p class="title-desc">
+    徳島県唯一の村・佐那河内村を<br>
+    歩き回って7つのスポットを発見しよう。<br>
+    村の自然・特産品・文化に出会う旅へ。
+  </p>
+  <div class="title-spots">
+    <span class="title-spot-chip">🏔 大川原高原</span>
+    <span class="title-spot-chip">🌊 嵯峨川</span>
+    <span class="title-spot-chip">🍓 いちご農園</span>
+    <span class="title-spot-chip">⛩ 大宮神社</span>
+    <span class="title-spot-chip">🏘 千年乃宿</span>
+    <span class="title-spot-chip">🍦 ジェラート</span>
+    <span class="title-spot-chip">🥝 キウイ畑</span>
+  </div>
+  <button id="start-btn">🌱 探索スタート！</button>
+  <div class="title-controls">← → ↑ ↓ キー または スワイプで移動 ／ スポットに近づくと情報が表示されます</div>
+  <a class="title-back-link" onclick="window.location='../website/index.html'">← ウェブサイトに戻る</a>
+</div>
+
+<!-- ゲーム本体 -->
+<div id="game-wrap">
+  <div id="hud">
+    <div id="hud-title">🌿 佐那河内村を探索中</div>
+    <div id="hud-stats">
+      <div class="hud-stat"><span class="hud-stat-label">HP</span><span class="hud-stat-val" id="hud-hp">30/30</span></div>
+      <div class="hud-stat"><span class="hud-stat-label">MP</span><span class="hud-stat-val" id="hud-mp">15/15</span></div>
+    </div>
+    <div id="hud-progress">発見: <span id="found-count">0</span> / 7</div>
+  </div>
+  <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  <canvas id="minimap" width="100" height="100"></canvas>
+  <canvas id="game-canvas"></canvas>
+
+  <!-- Dパッド（モバイル） -->
+  <div id="dpad">
+    <div class="dpad-btn" id="dpad-up">↑</div>
+    <div class="dpad-btn" id="dpad-down">↓</div>
+    <div class="dpad-btn" id="dpad-left">←</div>
+    <div class="dpad-btn" id="dpad-right">→</div>
+  </div>
+
+  <!-- 近くのスポットヒント -->
+  <div id="nearby-hint">🔍 Enterキー / タップで詳細を見る</div>
+
+  <!-- 発見トースト -->
+  <div id="discover-toast"></div>
+</div>
+
+<!-- スポット情報パネル -->
+<div id="spot-panel">
+  <div id="spot-panel-inner">
+    <div id="spot-panel-handle"></div>
+    <span id="spot-panel-emoji"></span>
+    <div id="spot-panel-tag"></div>
+    <div id="spot-panel-name"></div>
+    <div id="spot-panel-desc"></div>
+    <div id="spot-panel-fact"></div>
+    <button id="spot-close">✓ 続きを探索する</button>
+  </div>
+</div>
+
+<!-- バトルフラッシュ演出 -->
+<div id="battle-flash"></div>
+
+<!-- バトル画面（ドラクエ風） -->
+<div id="battle-screen">
+  <!-- 上部：敵グラフィックエリア -->
+  <div id="battle-bg">
+    <div id="battle-enemy-area">
+      <div id="battle-enemy-sprite">👾</div>
+      <div id="battle-enemy-name">モンスター</div>
+      <div id="battle-enemy-hp-bar-wrap">
+        <div id="battle-enemy-hp-bar" style="width:100%"></div>
+      </div>
+      <div id="battle-enemy-hp-text">HP 20 / 20</div>
+    </div>
+  </div>
+  <!-- 下部：UI -->
+  <div id="battle-ui">
+    <!-- メッセージウィンドウ -->
+    <div id="battle-msg-win">
+      <span id="battle-msg"></span><span id="battle-cursor">▼</span>
+    </div>
+    <!-- コマンド＋ステータス -->
+    <div id="battle-bottom">
+      <!-- コマンドウィンドウ -->
+      <div id="battle-cmd-win">
+        <button class="battle-cmd" id="cmd-attack">⚔ こうげき</button>
+        <button class="battle-cmd" id="cmd-spell">✨ じゅもん</button>
+        <button class="battle-cmd" id="cmd-run">💨 にげる</button>
+        <button class="battle-cmd" id="cmd-info" disabled>📖 みる</button>
+      </div>
+      <!-- 呪文サブメニュー -->
+      <div id="battle-spell-win" class="hidden">
+        <button class="battle-spell" id="spell-fire">🔥 ほのお <span class="mp-cost">MP6</span></button>
+        <button class="battle-spell" id="spell-heal">💚 かいふく <span class="mp-cost">MP4</span></button>
+        <button id="battle-spell-back">← もどる</button>
+      </div>
+      <!-- パーティステータス -->
+      <div id="battle-player-stat">
+        <!-- たびびと -->
+        <div class="party-member-block">
+          <div class="party-name" id="hero-name-label">🧑 たびびと</div>
+          <div class="stat-row">
+            <span class="stat-label">HP</span>
+            <div class="stat-bar-wrap"><div id="player-hp-bar"></div></div>
+            <span class="stat-val" id="player-hp-text">30/30</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">MP</span>
+            <div class="stat-bar-wrap"><div id="player-mp-bar"></div></div>
+            <span class="stat-val" id="player-mp-text">15/15</span>
+          </div>
+        </div>
+        <!-- スダリン -->
+        <div class="party-member-block">
+          <div class="party-name" id="c1-name-label">🍋 スダリン</div>
+          <div class="stat-row">
+            <span class="stat-label">HP</span>
+            <div class="stat-bar-wrap"><div id="c1-hp-bar" style="background:linear-gradient(90deg,#7ac943,#b5e678)"></div></div>
+            <span class="stat-val" id="c1-hp-text">20/20</span>
+          </div>
+        </div>
+        <!-- じろうじい -->
+        <div class="party-member-block">
+          <div class="party-name" id="c2-name-label">👴 じろうじい</div>
+          <div class="stat-row">
+            <span class="stat-label">HP</span>
+            <div class="stat-bar-wrap"><div id="c2-hp-bar" style="background:linear-gradient(90deg,#f4a261,#ffd166)"></div></div>
+            <span class="stat-val" id="c2-hp-text">25/25</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- クリア画面 -->
+<div id="clear-screen">
+  <div class="clear-emoji">🎉</div>
+  <div class="clear-title">探索完了！</div>
+  <p class="clear-sub">
+    佐那河内村の7つのスポットをすべて発見しました！<br>
+    豊かな自然と温かいコミュニティが息づく<br>
+    この村に、ぜひ実際に訪れてみてください。
+  </p>
+  <div class="clear-spots" id="clear-spots-list"></div>
+  <div class="clear-btns">
+    <button class="clear-btn clear-btn-primary" onclick="restartGame()">🔄 もう一度遊ぶ</button>
+    <button class="clear-btn clear-btn-outline" onclick="window.location='../website/index.html'">🌿 サイトへ戻る</button>
+  </div>
+</div>
+
+<script>
+// ===================================
+// 佐那河内村 探索ゲーム
+// ===================================
+
+// ----- スポットデータ -----
+// スポット位置は実際の佐那河内村の地理関係を反映:
+// 北に大川原高原、村中央に神社・ジェラート、川（嵯峨川）が東西を分断、
+// 川の南に河川プール、南西にキウイ畑
+const SPOTS = [
+  {
+    id: 'okawara',
+    name: '大川原高原',
+    emoji: '🏔',
+    tag: '標高1,020m 絶景スポット',
+    season: '6月〜7月',
+    desc: '徳島平野を一望できる標高1,020mの高原。初夏には約3万本の紫陽花が一面に咲き誇り、15基の風力発電風車がゆっくりと回る圧巻の絶景が広がります。',
+    fact: '<strong>📊 知ってた？</strong> 晴れた日は淡路島まで見渡せます。夏には天体望遠鏡を使った星空観測会も開催され、光害の少ない山頂で満天の星が楽しめます。',
+    color: '#52b788',
+    mapX: 0.73, mapY: 0.14,
+    tileX: 29, tileY: 5,   // 北東の山頂（山道の終点）
+  },
+  {
+    id: 'sagagawa',
+    name: '嵯峨川 河川プール',
+    emoji: '🌊',
+    tag: '清流 夏季限定',
+    season: '7月〜8月',
+    desc: '村を流れる嵯峨川の清流を利用した天然の河川プール。山から湧き出る透明な水は夏でも冷たく、子供から大人まで地元の人々に長く愛されている遊泳スポットです。',
+    fact: '<strong>🏊 地元の夏！</strong> 佐那河内小中学校の指定水泳場として使われており、子供たちが毎年ここで夏を過ごします。村の豊かな水資源を実感できる場所。',
+    color: '#74c0e8',
+    mapX: 0.36, mapY: 0.73,
+    tileX: 14, tileY: 27,  // 橋を渡った直南（川沿い）
+  },
+  {
+    id: 'ichigo',
+    name: 'さくらももいちご農園',
+    emoji: '🍓',
+    tag: '幻の高級いちご',
+    season: '1月〜4月',
+    desc: '村内約20軒の限定農家のみが栽培を許された「さくらももいちご」の農園。1年以上かけて丁寧に育てられる「爽やかで上品な甘み」は全国トップクラスの評価を受けています。',
+    fact: '<strong>💰 驚きの価値！</strong> 初競りでは1箱10万円を超える値がつくこともある「幻のいちご」。1992年生まれのブランドが2008年に「さくらもも」として進化しました。',
+    color: '#e63946',
+    mapX: 0.71, mapY: 0.44,
+    tileX: 28, tileY: 16,  // 中央右の畑地帯（村中部）
+  },
+  {
+    id: 'shrine',
+    name: '大宮神社',
+    emoji: '⛩',
+    tag: '村の総氏神 例大祭',
+    season: '10月第3日曜',
+    desc: '佐那河内村の総氏神として古くから崇敬される神社。毎年10月第3日曜日には例大祭が開催され、伝統の「神楽（かぐら）」が厳かに奉納されます。村人の心の拠りどころ。',
+    fact: '<strong>🎭 伝統の神楽！</strong> 1,000年以上続く「常会」文化と並び、大宮神社の例大祭は村のアイデンティティの核。神楽は地域の若者が受け継ぐ大切な無形文化財です。',
+    color: '#c0392b',
+    mapX: 0.24, mapY: 0.53,
+    tileX: 9, tileY: 19,   // 村中央横道沿い左（神社前）
+  },
+  {
+    id: 'inn',
+    name: '千年乃宿 旧高木邸',
+    emoji: '🏘',
+    tag: '江戸時代古民家 一棟貸し',
+    season: '通年',
+    desc: '江戸時代に建てられた古民家を丸ごと一棟貸し切りで楽しめる高級宿。重厚な梁と障子が醸し出す日本の原風景の中で、非日常の時間が過ごせます。',
+    fact: '<strong>🌟 特別な体験！</strong> 古民家に泊まることで、村の暮らしや文化を肌で感じることができます。SANAGOCHILL プロジェクトの一環として、古民家の保存・活用が進んでいます。',
+    color: '#a0735a',
+    mapX: 0.20, mapY: 0.30,
+    tileX: 7, tileY: 11,   // 北西部（上部横道の南・草地）
+  },
+  {
+    id: 'gelato',
+    name: '新家（にや）ジェラート',
+    emoji: '🍦',
+    tag: '地域交流拠点 特産品ジェラート',
+    season: '通年',
+    desc: '地域交流拠点「新家（にや）」に隣接するジェラートショップ。さくらももいちご・すだち・達磨キウイなど村の特産品をふんだんに使ったオリジナルジェラートが味わえます。',
+    fact: '<strong>🍋 すだち味が絶品！</strong> 村の木にも指定されているすだちを使ったジェラートは清涼感抜群。2021年4月オープン以来、村を訪れた人の定番土産になっています。',
+    color: '#f9c74f',
+    mapX: 0.51, mapY: 0.53,
+    tileX: 20, tileY: 19,  // 村中央横道沿い中央（神社と同じ横道）
+  },
+  {
+    id: 'kiwi',
+    name: '達磨キウイ畑',
+    emoji: '🥝',
+    tag: '糖度14〜17度 ブランドキウイ',
+    season: '秋〜冬',
+    desc: 'だるまのような丸い形が可愛らしい「達磨キウイ」の農園。糖度14〜17度という驚きの甘さのキウイは贈り物として人気が高く、オーナー制度で都市部の人々と農家がつながっています。',
+    fact: '<strong>🔗 都市と農村の絆！</strong> キウイのオーナー制度では、都市に住む人が自分のキウイの木を「所有」して収穫体験ができます。関係人口創出の先進モデルとして注目されています。',
+    color: '#52b788',
+    mapX: 0.23, mapY: 0.82,
+    tileX: 9, tileY: 31,   // 川の南・南西部の畑地帯
+  }
+];
+
+// ----- ゲーム定数 -----
+const TILE  = 32;      // タイルサイズ（ピクセル）
+const MAP_W = 40;      // マップ幅（タイル数）
+const MAP_H = 38;      // マップ高さ
+const PLAYER_SPEED = 2.8;
+const SPOT_RADIUS  = 2.5; // スポット検知半径（タイル）
+
+// ----- マップデータ -----
+// 0=草地, 1=山/木(壁), 2=川(通行不可), 3=道/橋, 4=建物, 5=畑, 6=深緑の木
+// 地理：北に大川原高原(山道でアクセス)、村中央に神社・ジェラート、
+//       嵯峨川が東西を分断(橋:x=14,x=25)、川南に河川プール、南西にキウイ畑
+const MAP = [
+  // y=0  北端の山
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  // y=1
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  // y=2  北東へ山道が伸びる(x=29)
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1],
+  // y=3
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,3,0,0,1,1,1,1,1,1,1,1],
+  // y=4  大川原高原エリア入口
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,3,0,0,0,1,1,1,1,1,1,1],
+  // y=5  ★大川原高原(x=29,y=5) 山頂・あじさい・風車
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,3,0,0,0,1,1,1,1,1,1,1],
+  // y=6  山道が南に下る(x=25へ向かう)
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,0,0,0,1,1,1,1,1,1,1],
+  // y=7
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,0,0,0,0,0,0,0,1,1,1,1,1,1,1],
+  // y=8  上部横道(x=4〜25)
+  [1,1,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=9
+  [1,1,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=10
+  [1,1,0,0,6,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,6,6,0,0,0,3,0,0,0,5,5,5,0,0,1,1,1,1,1,1],
+  // y=11  ★千年乃宿(x=7,y=11) 北西の草地、隣に古民家(4)
+  [1,1,0,0,6,0,0,0,4,4,0,0,0,0,3,0,0,0,0,0,6,6,0,0,0,3,0,0,0,5,5,5,0,0,1,1,1,1,1,1],
+  // y=12
+  [1,1,0,0,0,0,0,0,4,4,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,5,5,5,0,0,1,1,1,1,1,1],
+  // y=13
+  [1,1,0,0,0,0,0,0,0,0,0,0,6,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=14
+  [1,1,0,0,0,0,0,0,0,0,0,0,6,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=15  中部横道(x=4〜30)
+  [1,1,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,1,1,1,1,1,1],
+  // y=16  ★いちご農園(x=28) 中央右の畑地帯
+  [1,1,0,0,3,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,5,5,5,5,0,0,1,1,1,1,1,1],
+  // y=17
+  [1,1,0,0,3,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,5,5,5,5,0,0,1,1,1,1,1,1],
+  // y=18
+  [1,1,0,0,3,0,0,0,6,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=19  中央横道(x=4〜29) ★大宮神社(x=9) ★新家ジェラート(x=20)
+  [1,1,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,0,1,1,1,1,1,1],
+  // y=20  神社建物(x=9-10)・ジェラート店(x=20-21)
+  [1,1,0,0,3,0,0,0,0,4,4,0,0,0,3,0,0,0,0,0,4,4,0,0,0,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=21
+  [1,1,0,0,3,0,0,0,0,4,4,0,0,0,3,0,0,0,0,0,4,4,0,0,0,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=22
+  [1,1,0,0,3,0,0,0,0,0,0,0,6,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,6,0,0,0,1,1,1,1,1,1],
+  // y=23
+  [1,1,0,0,3,0,0,0,0,0,0,0,6,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,6,0,0,0,1,1,1,1,1,1],
+  // y=24  嵯峨川(川=2)  ※橋:x=14とx=25はtype=3(道)
+  [1,1,2,2,2,2,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,1,1,1,1],
+  // y=25  嵯峨川(川=2)
+  [1,1,2,2,2,2,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,1,1,1,1],
+  // y=26  川の南岸
+  [1,1,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=27  ★嵯峨川河川プール(x=14) 橋を渡った直南
+  [1,1,0,0,0,0,0,0,0,0,0,0,0,0,3,0,4,4,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=28  南部横道(x=4〜29)
+  [1,1,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,0,1,1,1,1,1,1],
+  // y=29
+  [1,1,0,0,3,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=30
+  [1,1,0,0,3,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,6,6,0,0,0,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=31  ★達磨キウイ畑(x=9) 南西の畑
+  [1,1,0,0,3,0,0,0,5,5,5,5,0,0,3,0,0,0,0,0,6,6,0,0,0,3,0,0,0,0,5,5,0,0,1,1,1,1,1,1],
+  // y=32
+  [1,1,0,0,3,0,0,0,5,5,5,5,0,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,5,5,0,0,1,1,1,1,1,1],
+  // y=33
+  [1,1,0,0,3,0,0,0,5,5,5,5,0,0,3,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=34
+  [1,1,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=35
+  [1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=36
+  [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+  // y=37  南端の山
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+];
+
+// ----- ゲーム状態 -----
+let state = {
+  player: { x: 14.5, y: 16, dir: 'down', frame: 0, frameTimer: 0 },
+  camera: { x: 0, y: 0 },
+  keys: {},
+  dpad: { up:false, down:false, left:false, right:false },
+  foundSpots: new Set(),
+  nearbySpot: null,
+  panelOpen: false,
+  gameStarted: false,
+  animFrame: null,
+  particles: [],
+};
+
+// ----- Canvas & Context -----
+const canvas = document.getElementById('game-canvas');
+const ctx    = canvas.getContext('2d');
+const miniCanvas = document.getElementById('minimap');
+const miniCtx    = miniCanvas.getContext('2d');
+
+// ----- リサイズ -----
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  // モバイル判定
+  const isMobile = window.innerWidth < 700 || 'ontouchstart' in window;
+  document.getElementById('dpad').style.display = isMobile ? 'block' : 'none';
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ----- 色パレット -----
+const TILE_COLORS = {
+  0: '#5a8f5a',  // 草地
+  1: '#2a5a3a',  // 山/木 (壁)
+  2: '#4aa5cc',  // 川
+  3: '#c4a46a',  // 道
+  4: '#a87850',  // 建物
+  5: '#7ab870',  // 畑
+  6: '#1e5030',  // 深緑の木
+};
+const TILE_PATTERNS = {
+  0: (x, y) => { // 草地のランダムな明暗
+    const r = ((x * 7 + y * 13) % 5);
+    if (r === 0) return '#4a7f4a';
+    if (r === 1) return '#65a065';
+    return '#5a8f5a';
+  },
+  1: () => '#1e4228',
+  2: (x, y) => ((x + y) % 2 === 0) ? '#5ab5d5' : '#42a0c8',
+  3: () => '#c4a46a',
+  4: () => '#8a6848',
+  5: (x, y) => ((x + y) % 2 === 0) ? '#7ab870' : '#8ac880',
+  6: () => '#163a20',
+};
+
+// ----- 描画: タイル -----
+function drawTile(tx, ty) {
+  const type = MAP[ty]?.[tx] ?? 1;
+  const sx = tx * TILE - state.camera.x;
+  const sy = ty * TILE - state.camera.y;
+
+  if (sx < -TILE || sx > canvas.width  + TILE) return;
+  if (sy < -TILE || sy > canvas.height + TILE) return;
+
+  const colorFn = TILE_PATTERNS[type] || (() => '#5a8f5a');
+  ctx.fillStyle = colorFn(tx, ty);
+  ctx.fillRect(sx, sy, TILE, TILE);
+
+  // タイル種別の装飾
+  if (type === 1) {
+    // 山/木: 三角形の木
+    ctx.fillStyle = '#0f2e1a';
+    ctx.beginPath();
+    ctx.moveTo(sx + TILE/2, sy + 4);
+    ctx.lineTo(sx + TILE - 4, sy + TILE - 4);
+    ctx.lineTo(sx + 4, sy + TILE - 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#0a2010';
+    ctx.fillRect(sx + TILE/2 - 3, sy + TILE - 8, 6, 8);
+  } else if (type === 6) {
+    // 深緑の木（丸い木）
+    ctx.fillStyle = '#0d3018';
+    ctx.beginPath();
+    ctx.arc(sx + TILE/2, sy + TILE/2 - 2, TILE/2 - 4, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#1a4a28';
+    ctx.beginPath();
+    ctx.arc(sx + TILE/2 - 3, sy + TILE/2 - 4, TILE/2 - 8, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#0a2515';
+    ctx.fillRect(sx + TILE/2 - 2, sy + TILE - 6, 4, 6);
+  } else if (type === 4) {
+    // 建物の窓
+    ctx.fillStyle = 'rgba(255,240,200,0.6)';
+    ctx.fillRect(sx + 4, sy + 4, 8, 8);
+    ctx.fillRect(sx + TILE - 12, sy + 4, 8, 8);
+    ctx.fillStyle = 'rgba(100,70,40,0.8)';
+    ctx.fillRect(sx + TILE/2 - 4, sy + TILE - 12, 8, 12);
+  } else if (type === 5) {
+    // 畑のライン
+    ctx.strokeStyle = 'rgba(60,120,60,0.4)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath();
+      ctx.moveTo(sx + 3, sy + 8 + i * 10);
+      ctx.lineTo(sx + TILE - 3, sy + 8 + i * 10);
+      ctx.stroke();
+    }
+  } else if (type === 3) {
+    // 道のライン
+    ctx.strokeStyle = 'rgba(180,160,100,0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy + TILE/2);
+    ctx.lineTo(sx + TILE, sy + TILE/2);
+    ctx.stroke();
+  } else if (type === 2) {
+    // 川の波
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1.5;
+    const waveOffset = (Date.now() / 400 + tx * 0.5) % (TILE);
+    ctx.beginPath();
+    ctx.moveTo(sx, sy + TILE/2 + Math.sin((sx + waveOffset) * 0.2) * 3);
+    ctx.quadraticCurveTo(sx + TILE/2, sy + TILE/2 - 4, sx + TILE, sy + TILE/2 + 2);
+    ctx.stroke();
+  }
+}
+
+// ----- 描画: スポットマーカー -----
+function drawSpotMarkers() {
+  SPOTS.forEach(spot => {
+    const sx = spot.tileX * TILE + TILE/2 - state.camera.x;
+    const sy = spot.tileY * TILE + TILE/2 - state.camera.y;
+
+    if (sx < -60 || sx > canvas.width + 60 || sy < -60 || sy > canvas.height + 60) return;
+
+    const found = state.foundSpots.has(spot.id);
+    const isNearby = state.nearbySpot === spot;
+
+    // 影
+    ctx.save();
+    ctx.shadowColor = found ? spot.color : 'rgba(0,0,0,0.3)';
+    ctx.shadowBlur = isNearby ? 20 : 8;
+
+    // 外円（パルス）
+    if (!found && isNearby) {
+      const pulse = (Math.sin(Date.now() / 300) + 1) / 2;
+      ctx.beginPath();
+      ctx.arc(sx, sy - 20, 18 + pulse * 8, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(249,199,79,${0.2 + pulse * 0.2})`;
+      ctx.fill();
+    }
+
+    // ピン本体
+    ctx.beginPath();
+    ctx.arc(sx, sy - 22, 14, 0, Math.PI * 2);
+    ctx.fillStyle = found ? spot.color : (isNearby ? '#f9c74f' : 'rgba(255,255,255,0.85)');
+    ctx.fill();
+    ctx.strokeStyle = found ? 'rgba(255,255,255,0.8)' : (isNearby ? '#e6a800' : 'rgba(0,0,0,0.2)');
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // ピンの下部三角
+    ctx.beginPath();
+    ctx.moveTo(sx - 6, sy - 10);
+    ctx.lineTo(sx + 6, sy - 10);
+    ctx.lineTo(sx, sy - 2);
+    ctx.fillStyle = found ? spot.color : (isNearby ? '#f9c74f' : 'rgba(255,255,255,0.85)');
+    ctx.fill();
+
+    // 絵文字
+    ctx.restore();
+    ctx.font = '14px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(found ? '✓' : spot.emoji, sx, sy - 22);
+
+    // スポット名ラベル
+    if (isNearby || found) {
+      ctx.font = `bold ${found ? 10 : 12}px 'Hiragino Kaku Gothic ProN', sans-serif`;
+      ctx.textAlign = 'center';
+      const label = spot.name;
+      const textW = ctx.measureText(label).width + 12;
+      ctx.fillStyle = found ? 'rgba(60,120,80,0.85)' : 'rgba(20,40,20,0.85)';
+      ctx.beginPath();
+      ctx.roundRect(sx - textW/2, sy + 2, textW, 18, 4);
+      ctx.fill();
+      ctx.fillStyle = 'white';
+      ctx.fillText(label, sx, sy + 11);
+    }
+  });
+}
+
+// ----- 描画: プレイヤー -----
+function drawPlayer() {
+  const px = state.player.x * TILE - state.camera.x;
+  const py = state.player.y * TILE - state.camera.y;
+
+  // 影
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.beginPath();
+  ctx.ellipse(px, py + 14, 10, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 体（カプセル型）
+  const bodyColor = '#e8c87a';
+  ctx.fillStyle = '#2d6a4f';
+  ctx.beginPath();
+  ctx.roundRect(px - 8, py - 10, 16, 20, 4);
+  ctx.fill();
+
+  // 頭
+  ctx.fillStyle = bodyColor;
+  ctx.beginPath();
+  ctx.arc(px, py - 14, 9, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 顔の方向
+  const dir = state.player.dir;
+  ctx.fillStyle = '#5a3a1a';
+  if (dir === 'down') {
+    ctx.fillRect(px - 3, py - 15, 2, 2);
+    ctx.fillRect(px + 1, py - 15, 2, 2);
+    ctx.beginPath();
+    ctx.arc(px, py - 11, 2, 0, Math.PI);
+    ctx.fill();
+  } else if (dir === 'up') {
+    // 後頭部
+    ctx.fillStyle = '#d4a860';
+    ctx.beginPath();
+    ctx.arc(px, py - 14, 9, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (dir === 'right') {
+    ctx.fillRect(px + 2, py - 15, 2, 2);
+    ctx.beginPath();
+    ctx.arc(px + 2, py - 11, 1.5, 0, Math.PI);
+    ctx.fill();
+  } else {
+    ctx.fillRect(px - 4, py - 15, 2, 2);
+    ctx.beginPath();
+    ctx.arc(px - 2, py - 11, 1.5, 0, Math.PI);
+    ctx.fill();
+  }
+
+  // リュック
+  ctx.fillStyle = '#1b4332';
+  ctx.fillRect(px - 6, py - 8, 4, 10);
+
+  ctx.restore();
+}
+
+// ----- マップ上の仲間キャラ描画 -----
+function drawCompanion(ox, oy, emoji, bodyColor, headColor) {
+  const t = Date.now() / 800;
+  const bobY = Math.sin(t + ox * 0.5) * 2.5;
+  const px2 = state.player.x * TILE - state.camera.x + ox;
+  const py2 = state.player.y * TILE - state.camera.y + oy + bobY;
+
+  ctx.save();
+  // 影
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.beginPath();
+  ctx.ellipse(px2, py2 + 13, 8, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // 体
+  ctx.fillStyle = bodyColor;
+  ctx.beginPath();
+  ctx.roundRect(px2 - 7, py2 - 8, 14, 18, 4);
+  ctx.fill();
+  // 頭
+  ctx.fillStyle = headColor;
+  ctx.beginPath();
+  ctx.arc(px2, py2 - 13, 8, 0, Math.PI * 2);
+  ctx.fill();
+  // 絵文字
+  ctx.font = '10px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(emoji, px2, py2 - 13);
+  ctx.restore();
+}
+
+// ----- パーティクル -----
+function spawnParticles(x, y, color) {
+  for (let i = 0; i < 12; i++) {
+    const angle = (i / 12) * Math.PI * 2;
+    const speed = 1.5 + Math.random() * 2;
+    state.particles.push({
+      x: x * TILE, y: y * TILE,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1,
+      color,
+      size: 3 + Math.random() * 4,
+    });
+  }
+}
+
+function updateParticles() {
+  state.particles = state.particles.filter(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.08;
+    p.life -= 0.025;
+    return p.life > 0;
+  });
+}
+
+function drawParticles() {
+  state.particles.forEach(p => {
+    const sx = p.x - state.camera.x;
+    const sy = p.y - state.camera.y;
+    ctx.save();
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(sx, sy, p.size * p.life, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+}
+
+// ----- ミニマップ -----
+function drawMinimap() {
+  const mw = miniCanvas.width;
+  const mh = miniCanvas.height;
+  miniCtx.clearRect(0, 0, mw, mh);
+
+  // 背景
+  miniCtx.fillStyle = '#0d1f14';
+  miniCtx.fillRect(0, 0, mw, mh);
+
+  // マップ
+  const scaleX = mw / MAP_W;
+  const scaleY = mh / MAP_H;
+  for (let y = 0; y < MAP_H; y++) {
+    for (let x = 0; x < MAP_W; x++) {
+      const type = MAP[y][x];
+      const colors = { 0:'#3a6a3a', 1:'#1a3a22', 2:'#3a85aa', 3:'#a08050', 4:'#705030', 5:'#4a8a4a', 6:'#0d2e18' };
+      miniCtx.fillStyle = colors[type] || '#3a6a3a';
+      miniCtx.fillRect(x * scaleX, y * scaleY, scaleX + 0.5, scaleY + 0.5);
+    }
+  }
+
+  // スポットマーカー
+  SPOTS.forEach(spot => {
+    const found = state.foundSpots.has(spot.id);
+    miniCtx.fillStyle = found ? spot.color : 'rgba(249,199,79,0.9)';
+    miniCtx.beginPath();
+    miniCtx.arc(spot.tileX * scaleX, spot.tileY * scaleY, found ? 3 : 2.5, 0, Math.PI*2);
+    miniCtx.fill();
+  });
+
+  // プレイヤー
+  miniCtx.fillStyle = '#ffffff';
+  miniCtx.beginPath();
+  miniCtx.arc(state.player.x * scaleX, state.player.y * scaleY, 3, 0, Math.PI*2);
+  miniCtx.fill();
+  miniCtx.strokeStyle = '#2d6a4f';
+  miniCtx.lineWidth = 1;
+  miniCtx.stroke();
+}
+
+// ----- カメラ更新 -----
+function updateCamera() {
+  const targetX = state.player.x * TILE - canvas.width  / 2;
+  const targetY = state.player.y * TILE - canvas.height / 2;
+  const maxX = MAP_W * TILE - canvas.width;
+  const maxY = MAP_H * TILE - canvas.height;
+
+  const clampedX = Math.max(0, Math.min(maxX, targetX));
+  const clampedY = Math.max(0, Math.min(maxY, targetY));
+
+  // スムーズ追従
+  state.camera.x += (clampedX - state.camera.x) * 0.12;
+  state.camera.y += (clampedY - state.camera.y) * 0.12;
+}
+
+// ----- 移動 -----
+function isWalkable(tx, ty) {
+  const itx = Math.floor(tx);
+  const ity = Math.floor(ty);
+  if (itx < 0 || ity < 0 || itx >= MAP_W || ity >= MAP_H) return false;
+  const type = MAP[ity][itx];
+  // type=2(川)は通行不可。橋(川上のtype=3)のみ通れる
+  return type === 0 || type === 3 || type === 5;
+}
+
+function updatePlayer(dt) {
+  if (state.panelOpen) return;
+  const k = state.keys;
+  const d = state.dpad;
+  let dx = 0, dy = 0;
+
+  if (k['ArrowLeft']  || k['a'] || k['A'] || d.left)  dx -= 1;
+  if (k['ArrowRight'] || k['d'] || k['D'] || d.right) dx += 1;
+  if (k['ArrowUp']    || k['w'] || k['W'] || d.up)    dy -= 1;
+  if (k['ArrowDown']  || k['s'] || k['S'] || d.down)  dy += 1;
+
+  if (dx !== 0 && dy !== 0) {
+    dx *= 0.707;
+    dy *= 0.707;
+  }
+
+  const speed = PLAYER_SPEED * dt;
+  const nx = state.player.x + dx * speed;
+  const ny = state.player.y + dy * speed;
+
+  if (dx !== 0 || dy !== 0) {
+    if (Math.abs(dx) > Math.abs(dy)) {
+      state.player.dir = dx > 0 ? 'right' : 'left';
+    } else {
+      state.player.dir = dy > 0 ? 'down' : 'up';
+    }
+    // アニメーションフレーム
+    state.player.frameTimer += dt;
+    if (state.player.frameTimer > 0.15) {
+      state.player.frame = (state.player.frame + 1) % 4;
+      state.player.frameTimer = 0;
+    }
+  }
+
+  // X移動
+  if (isWalkable(nx, state.player.y) && isWalkable(nx + 0.4, state.player.y) && isWalkable(nx - 0.4, state.player.y)) {
+    state.player.x = nx;
+  }
+  // Y移動
+  if (isWalkable(state.player.x, ny) && isWalkable(state.player.x + 0.4, ny) && isWalkable(state.player.x - 0.4, ny)) {
+    state.player.y = ny;
+  }
+}
+
+// ===================================
+// バトルシステム（ドラクエ風）
+// ===================================
+
+// ----- 敵データ（スポットごと） -----
+const ENEMIES = {
+  okawara: {
+    name: 'あじさいドラゴン',
+    sprite: '🐉',
+    color: '#9370DB',
+    hp: 24, atk: [5,10], def: 1,
+    intro: 'あじさいドラゴンが あらわれた！\n山頂の紫の龍が立ちはだかる！',
+  },
+  sagagawa: {
+    name: 'カッパのぬし',
+    sprite: '🐸',
+    color: '#4a90d9',
+    hp: 18, atk: [4,8], def: 0,
+    intro: 'カッパのぬしが あらわれた！\n清流を守る河童の長老だ！',
+  },
+  ichigo: {
+    name: 'ももいちごまじん',
+    sprite: '👹',
+    color: '#e63946',
+    hp: 16, atk: [4,7], def: 0,
+    intro: 'ももいちごまじんが あらわれた！\nいちご畑の精霊が怒っている！',
+  },
+  shrine: {
+    name: 'おまもりゴースト',
+    sprite: '👻',
+    color: '#c0392b',
+    hp: 20, atk: [5,9], def: 1,
+    intro: 'おまもりゴーストが あらわれた！\n神社に宿る神聖な守り神だ！',
+  },
+  inn: {
+    name: 'ざしきわらし',
+    sprite: '🧒',
+    color: '#a0735a',
+    hp: 14, atk: [3,7], def: 0,
+    intro: 'ざしきわらしが あらわれた！\n千年乃宿に住みつく古い精霊…',
+  },
+  gelato: {
+    name: 'アイスゴーレム',
+    sprite: '🧊',
+    color: '#74c0e8',
+    hp: 20, atk: [4,9], def: 1,
+    intro: 'アイスゴーレムが あらわれた！\nすだちジェラートが凍って巨人に！',
+  },
+  kiwi: {
+    name: 'キウイキング',
+    sprite: '👑',
+    color: '#52b788',
+    hp: 22, atk: [5,9], def: 1,
+    intro: 'キウイキングが あらわれた！\n達磨キウイ畑を統べる偉大な王！',
+  },
+};
+
+// ----- バトル状態 -----
+const battle = {
+  active: false,
+  pendingSpot: null,
+  enemy: null,
+  enemyHP: 0,
+  enemyMaxHP: 0,
+  playerHP: 30,
+  playerMaxHP: 30,
+  playerMP: 15,
+  playerMaxMP: 15,
+  c1HP: 20, c1MaxHP: 20, c1Alive: true,  // スダリン
+  c2HP: 25, c2MaxHP: 25, c2Alive: true,  // じろうじい
+  phase: 'idle',
+  msgQueue: [],
+  msgTimer: null,
+};
+
+// ----- バトルUI要素取得 -----
+const bScreen   = document.getElementById('battle-screen');
+const bSprite   = document.getElementById('battle-enemy-sprite');
+const bEName    = document.getElementById('battle-enemy-name');
+const bEHPBar   = document.getElementById('battle-enemy-hp-bar');
+const bEHPText  = document.getElementById('battle-enemy-hp-text');
+const bMsg      = document.getElementById('battle-msg');
+const bCursor   = document.getElementById('battle-cursor');
+const bCmdWin   = document.getElementById('battle-cmd-win');
+const bSpellWin = document.getElementById('battle-spell-win');
+const bFlash    = document.getElementById('battle-flash');
+
+// ----- メッセージタイプライター -----
+function typeMsg(text, cb) {
+  bCursor.style.display = 'none';
+  bMsg.textContent = '';
+  let i = 0;
+  function tick() {
+    if (i < text.length) {
+      bMsg.textContent += text[i++];
+      battle.msgTimer = setTimeout(tick, 30);
+    } else {
+      bCursor.style.display = 'inline-block';
+      if (cb) setTimeout(cb, 600);
+    }
+  }
+  tick();
+}
+
+// ----- バトルUI更新 -----
+function updateBattleUI() {
+  const epct = Math.max(0, battle.enemyHP / battle.enemyMaxHP * 100);
+  bEHPBar.style.width = epct + '%';
+  bEHPText.textContent = `HP ${Math.max(0,battle.enemyHP)} / ${battle.enemyMaxHP}`;
+
+  // 主人公
+  const hpPct = battle.playerHP / battle.playerMaxHP * 100;
+  const mpPct = battle.playerMP / battle.playerMaxMP * 100;
+  document.getElementById('player-hp-bar').style.width = hpPct + '%';
+  document.getElementById('player-mp-bar').style.width = mpPct + '%';
+  document.getElementById('player-hp-text').textContent = `${battle.playerHP}/${battle.playerMaxHP}`;
+  document.getElementById('player-mp-text').textContent = `${battle.playerMP}/${battle.playerMaxMP}`;
+  document.getElementById('player-hp-bar').style.background =
+    battle.playerHP <= 8  ? 'linear-gradient(90deg,#e63946,#ff6b6b)' :
+    battle.playerHP <= 15 ? 'linear-gradient(90deg,#f4a261,#ffd166)' :
+    'linear-gradient(90deg,#52b788,#95d5b2)';
+  document.getElementById('hero-name-label').className = 'party-name' + (battle.playerHP <= 0 ? ' ko' : '');
+
+  // スダリン
+  const c1Pct = battle.c1HP / battle.c1MaxHP * 100;
+  document.getElementById('c1-hp-bar').style.width = c1Pct + '%';
+  document.getElementById('c1-hp-text').textContent = `${Math.max(0,battle.c1HP)}/${battle.c1MaxHP}`;
+  document.getElementById('c1-name-label').className = 'party-name' + (!battle.c1Alive ? ' ko' : '');
+
+  // じろうじい
+  const c2Pct = battle.c2HP / battle.c2MaxHP * 100;
+  document.getElementById('c2-hp-bar').style.width = c2Pct + '%';
+  document.getElementById('c2-hp-text').textContent = `${Math.max(0,battle.c2HP)}/${battle.c2MaxHP}`;
+  document.getElementById('c2-name-label').className = 'party-name' + (!battle.c2Alive ? ' ko' : '');
+
+  // HUD更新
+  document.getElementById('hud-hp').textContent = `${battle.playerHP}/${battle.playerMaxHP}`;
+  document.getElementById('hud-mp').textContent = `${battle.playerMP}/${battle.playerMaxMP}`;
+}
+
+// ----- コマンド表示切替 -----
+function showCommands(show) {
+  bCmdWin.classList.toggle('hidden', !show);
+  bSpellWin.classList.add('hidden');
+  battle.phase = show ? 'command' : 'animating';
+  // MP不足の呪文を無効化
+  document.getElementById('spell-fire').disabled = battle.playerMP < 6;
+  document.getElementById('spell-heal').disabled = battle.playerMP < 4 || battle.playerHP >= battle.playerMaxHP;
+}
+
+// ----- ランダム整数 -----
+function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+// ----- バトル開始 -----
+function startBattle(spot) {
+  const enemy = ENEMIES[spot.id];
+  if (!enemy) { revealSpot(spot); return; }
+
+  battle.active    = true;
+  battle.pendingSpot = spot;
+  battle.enemy     = enemy;
+  battle.enemyHP   = enemy.hp;
+  battle.enemyMaxHP = enemy.hp;
+
+  state.panelOpen = true; // 移動ロック
+
+  // フラッシュ演出
+  bFlash.classList.remove('flash');
+  void bFlash.offsetWidth;
+  bFlash.classList.add('flash');
+
+  // スプライト設定
+  bSprite.textContent = enemy.sprite;
+  bSprite.className = '';
+  bEName.textContent = enemy.name;
+  bEName.style.color = enemy.color;
+
+  updateBattleUI();
+  showCommands(false);
+
+  // 仲間をバトル開始時に生存確認（HPがあれば復活）
+  if (battle.c1HP > 0) battle.c1Alive = true;
+  if (battle.c2HP > 0) battle.c2Alive = true;
+  updateBattleUI();
+
+  setTimeout(() => {
+    bScreen.classList.add('active');
+    BGMEngine.crossfade('battle');
+    typeMsg(enemy.intro, () => showCommands(true));
+  }, 300);
+}
+
+// ----- 敵の攻撃（ランダムターゲット） -----
+function enemyAttack(afterCb) {
+  // 生きているメンバーからランダムに攻撃対象を選ぶ
+  const targets = [];
+  if (battle.playerHP > 0) targets.push('hero');
+  if (battle.c1Alive) targets.push('c1');
+  if (battle.c2Alive) targets.push('c2');
+  const target = targets[Math.floor(Math.random() * targets.length)];
+
+  const dmg = Math.max(1, rnd(...battle.enemy.atk));
+  let targetName, died = false;
+
+  if (target === 'hero') {
+    battle.playerHP = Math.max(0, battle.playerHP - dmg);
+    targetName = 'たびびと';
+    died = battle.playerHP <= 0;
+  } else if (target === 'c1') {
+    battle.c1HP = Math.max(0, battle.c1HP - dmg);
+    targetName = 'スダリン';
+    if (battle.c1HP <= 0) { battle.c1Alive = false; died = true; }
+  } else {
+    battle.c2HP = Math.max(0, battle.c2HP - dmg);
+    targetName = 'じろうじい';
+    if (battle.c2HP <= 0) { battle.c2Alive = false; died = true; }
+  }
+  updateBattleUI();
+
+  bScreen.style.animation = 'none';
+  void bScreen.offsetWidth;
+  bScreen.style.animation = 'screen-shake 0.3s ease';
+
+  typeMsg(`${battle.enemy.name}の こうげき！\n${targetName}は ${dmg} のダメージをうけた！`, () => {
+    if (target === 'hero' && battle.playerHP <= 0) {
+      typeMsg('たびびとは たおれてしまった…\n…しかし、また立ち上がれる。', () => endBattle('lose'));
+    } else if (died) {
+      typeMsg(`${targetName}は たおれてしまった…`, () => afterCb());
+    } else {
+      afterCb();
+    }
+  });
+}
+
+// ----- プレイヤー行動 -----
+function playerAttack() {
+  if (battle.phase !== 'command') return;
+  showCommands(false);
+
+  const base = rnd(6, 12);
+  const dmg  = Math.max(1, base - (battle.enemy.def || 0));
+  battle.enemyHP -= dmg;
+  updateBattleUI();
+
+  bSprite.className = 'shake';
+  setTimeout(() => { bSprite.className = ''; }, 400);
+
+  typeMsg(`たびびとの こうげき！\n${battle.enemy.name}に ${dmg} のダメージ！`, () => {
+    if (battle.enemyHP <= 0) {
+      winBattle();
+    } else {
+      runCompanionTurns(() => { if(battle.active) enemyAttack(() => showCommands(true)); });
+    }
+  });
+}
+
+function playerSpellFire() {
+  if (battle.phase !== 'command' || battle.playerMP < 6) return;
+  showCommands(false);
+  battle.playerMP -= 6;
+  updateBattleUI();
+
+  const dmg = rnd(12, 20);
+  battle.enemyHP -= dmg;
+  updateBattleUI();
+
+  bSprite.className = 'shake';
+  setTimeout(() => { bSprite.className = ''; }, 400);
+
+  typeMsg(`たびびとは ほのおを となえた！\n${battle.enemy.name}に ${dmg} のダメージ！🔥`, () => {
+    if (battle.enemyHP <= 0) {
+      winBattle();
+    } else {
+      runCompanionTurns(() => { if(battle.active) enemyAttack(() => showCommands(true)); });
+    }
+  });
+}
+
+function playerSpellHeal() {
+  if (battle.phase !== 'command' || battle.playerMP < 4) return;
+  showCommands(false);
+  battle.playerMP -= 4;
+  const heal = rnd(8, 14);
+  battle.playerHP = Math.min(battle.playerMaxHP, battle.playerHP + heal);
+  updateBattleUI();
+
+  typeMsg(`たびびとは かいふくを となえた！\n HPが ${heal} かいふくした！💚`, () => {
+    runCompanionTurns(() => { if(battle.active) enemyAttack(() => showCommands(true)); });
+  });
+}
+
+function playerRun() {
+  if (battle.phase !== 'command') return;
+  showCommands(false);
+  if (Math.random() < 0.5) {
+    typeMsg('うまく にげきれた！', () => endBattle('escape'));
+  } else {
+    typeMsg('にげられなかった！', () => {
+      runCompanionTurns(() => { if(battle.active) enemyAttack(() => showCommands(true)); });
+    });
+  }
+}
+
+// ----- バトル勝利 -----
+function winBattle() {
+  battle.active = false; // 仲間ターンの再入を防ぐ
+  bSprite.className = 'dead';
+  const restore = rnd(5, 10);
+  battle.playerHP = Math.min(battle.playerMaxHP, battle.playerHP + restore);
+  if (battle.c1Alive) battle.c1HP = Math.min(battle.c1MaxHP, battle.c1HP + rnd(3,6));
+  if (battle.c2Alive) battle.c2HP = Math.min(battle.c2MaxHP, battle.c2HP + rnd(3,6));
+  updateBattleUI();
+
+  setTimeout(() => {
+    typeMsg(`${battle.enemy.name}を たおした！\nパーティのHPが少し回復した！`, () => {
+      endBattle('win');
+    });
+  }, 700);
+}
+
+// ----- バトル終了 -----
+function endBattle(result) {
+  clearTimeout(battle.msgTimer);
+  battle.active = false;
+  bScreen.classList.remove('active');
+  state.panelOpen = false;
+  battle.phase = 'idle';
+  BGMEngine.crossfade('explore'); // 探索BGMに戻す
+
+  if (result === 'win') {
+    const spot = battle.pendingSpot;
+    battle.pendingSpot = null;
+    revealSpot(spot);
+  } else if (result === 'lose') {
+    battle.playerHP = battle.playerMaxHP;
+    battle.playerMP = battle.playerMaxMP;
+    battle.c1HP = battle.c1MaxHP; battle.c1Alive = true;
+    battle.c2HP = battle.c2MaxHP; battle.c2Alive = true;
+    updateBattleUI();
+    state.player.x = 14.5;
+    state.player.y = 16;
+    showToast('💫 パーティ全員回復して再出発！');
+    battle.pendingSpot = null;
+  } else {
+    // 逃げた
+    battle.pendingSpot = null;
+    showToast('💨 うまく逃げた！別の場所を探そう');
+  }
+}
+
+// ----- スポット情報を表示（バトル勝利後） -----
+function revealSpot(spot) {
+  state.panelOpen = true;
+  state.foundSpots.add(spot.id);
+
+  spawnParticles(state.player.x, state.player.y, spot.color);
+  updateHUD();
+  showToast(`✨ 発見！「${spot.name}」`);
+
+  document.getElementById('spot-panel-emoji').textContent = spot.emoji;
+  document.getElementById('spot-panel-tag').textContent   = `${spot.tag} / ${spot.season}`;
+  document.getElementById('spot-panel-name').textContent  = spot.name;
+  document.getElementById('spot-panel-desc').textContent  = spot.desc;
+  document.getElementById('spot-panel-fact').innerHTML    = spot.fact;
+  document.getElementById('spot-panel').classList.add('open');
+  document.getElementById('nearby-hint').classList.remove('show');
+
+  if (state.foundSpots.size === SPOTS.length) {
+    setTimeout(showClear, 1500);
+  }
+}
+
+// ----- コマンドボタンのイベント -----
+document.getElementById('cmd-attack').addEventListener('click', playerAttack);
+document.getElementById('cmd-run').addEventListener('click', playerRun);
+document.getElementById('cmd-spell').addEventListener('click', () => {
+  bCmdWin.classList.add('hidden');
+  bSpellWin.classList.remove('hidden');
+});
+document.getElementById('spell-fire').addEventListener('click', playerSpellFire);
+document.getElementById('spell-heal').addEventListener('click', playerSpellHeal);
+document.getElementById('battle-spell-back').addEventListener('click', () => {
+  bSpellWin.classList.add('hidden');
+  bCmdWin.classList.remove('hidden');
+});
+
+// キーボードでバトルを操作
+window.addEventListener('keydown', e => {
+  if (!battle.active || battle.phase !== 'command') return;
+  if (e.key === 'z' || e.key === 'Z' || e.key === 'Enter') {
+    // Zキーで攻撃
+    if (!bSpellWin.classList.contains('hidden')) return;
+    if (!bCmdWin.classList.contains('hidden')) playerAttack();
+  }
+  if (e.key === 'Escape' || e.key === 'x' || e.key === 'X') {
+    if (!bSpellWin.classList.contains('hidden')) {
+      bSpellWin.classList.add('hidden');
+      bCmdWin.classList.remove('hidden');
+    }
+  }
+});
+
+// ===================================
+// BGMエンジン（Web Audio API）
+// ===================================
+const N = {
+  A2:110.00, C3:130.81, D3:146.83, E3:164.81, F3:174.61, G3:196.00, A3:220.00, B3:246.94,
+  C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88,
+  C5:523.25, D5:587.33, E5:659.25, G5:783.99, R:0,
+};
+
+const BGM_DATA = {
+  // 探索BGM「村の朝」C長調 BPM=90 12拍ループ
+  explore: {
+    bpm: 90,
+    tracks: [
+      // メロディ（サイン波）
+      [[N.E4,1,'sine',.18],[N.G4,.5,'sine',.15],[N.A4,.5,'sine',.15],[N.G4,1,'sine',.16],
+       [N.C5,1,'sine',.18],[N.B4,.5,'sine',.15],[N.A4,.5,'sine',.14],[N.G4,2,'sine',.17],
+       [N.A4,1,'sine',.16],[N.G4,.5,'sine',.14],[N.E4,.5,'sine',.13],[N.C5,1,'sine',.18],
+       [N.B4,.5,'sine',.15],[N.A4,.5,'sine',.14],[N.G4,2,'sine',.16]],
+      // ベース（三角波）
+      [[N.C3,4,'triangle',.12],[N.G3,4,'triangle',.10],[N.A3,2,'triangle',.10],[N.E3,2,'triangle',.09],
+       [N.F3,2,'triangle',.09],[N.G3,2,'triangle',.10]],
+      // コード・パッド（三角波 小音量）
+      [[N.C4,2,'triangle',.06],[N.R,2,'triangle',0],[N.G4,2,'triangle',.05],[N.R,2,'triangle',0],
+       [N.A3,2,'triangle',.05],[N.C4,2,'triangle',.05],[N.G3,2,'triangle',.05],[N.R,2,'triangle',0]],
+    ],
+  },
+  // バトルBGM「戦いの炎」Aマイナー BPM=150 8拍ループ
+  battle: {
+    bpm: 150,
+    tracks: [
+      // メロディ（矩形波）
+      [[N.A4,.5,'square',.11],[N.C5,.5,'square',.11],[N.E5,.5,'square',.12],[N.D5,.5,'square',.11],
+       [N.C5,.5,'square',.11],[N.B4,.5,'square',.10],[N.A4,1,'square',.12],
+       [N.G4,.5,'square',.10],[N.A4,.5,'square',.10],[N.C5,.5,'square',.11],[N.A4,.5,'square',.10],
+       [N.E5,1.5,'square',.12],[N.D5,.5,'square',.10]],
+      // 16分音符ベース（三角波・ドライビング）
+      ...(()=>{ const t=[]; for(let i=0;i<16;i++){t.push([N.A2,.25,'triangle',.14]);t.push([N.R,.25,'triangle',0]);} return [t]; })(),
+      // コード刻み
+      [[N.A3,.5,'triangle',.08],[N.R,.5,'triangle',0],[N.C4,.5,'triangle',.07],[N.R,.5,'triangle',0],
+       [N.E4,.5,'triangle',.07],[N.R,.5,'triangle',0],[N.A3,.5,'triangle',.08],[N.R,.5,'triangle',0],
+       [N.R,2,'triangle',0],[N.G3,.5,'triangle',.07],[N.R,.5,'triangle',0],[N.A3,.5,'triangle',.08],[N.R,.5,'triangle',0]],
+    ],
+  },
+};
+
+const BGMEngine = {
+  ctx: null, masterGain: null, currentBGM: null, loopHandle: null,
+
+  _init() {
+    if (this.ctx) return true;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      this.ctx = new AC();
+      this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.value = 0.22;
+      this.masterGain.connect(this.ctx.destination);
+      return true;
+    } catch(e) { return false; }
+  },
+
+  _note(f, start, dur, type, vol) {
+    if (!f || !this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const g   = this.ctx.createGain();
+      osc.type = type || 'sine';
+      osc.frequency.value = f;
+      g.gain.setValueAtTime(0, start);
+      g.gain.linearRampToValueAtTime(vol || 0.1, start + 0.012);
+      g.gain.setValueAtTime(vol || 0.1, start + dur * 0.72);
+      g.gain.exponentialRampToValueAtTime(0.0001, start + dur * 0.98);
+      osc.connect(g); g.connect(this.masterGain);
+      osc.start(start); osc.stop(start + dur + 0.01);
+    } catch(e) {}
+  },
+
+  _schedule(tracks, bpm, startAt) {
+    const spb = 60 / bpm;
+    let maxT = 0;
+    tracks.forEach(track => {
+      let t = startAt;
+      track.forEach(([f, b, type, v]) => {
+        this._note(f, t, b * spb, type, v);
+        t += b * spb;
+      });
+      maxT = Math.max(maxT, t);
+    });
+    return maxT - startAt;
+  },
+
+  play(name) {
+    if (!this._init()) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+    this.stop();
+    this.currentBGM = name;
+    const seq = BGM_DATA[name];
+    if (!seq) return;
+    const loop = () => {
+      if (this.currentBGM !== name) return;
+      const dur = this._schedule(seq.tracks, seq.bpm, this.ctx.currentTime + 0.05);
+      this.loopHandle = setTimeout(loop, Math.max(50, (dur - 0.15) * 1000));
+    };
+    loop();
+  },
+
+  stop() {
+    this.currentBGM = null;
+    clearTimeout(this.loopHandle);
+    if (this.masterGain && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.masterGain.gain.cancelScheduledValues(now);
+      this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+      this.masterGain.gain.linearRampToValueAtTime(0, now + 0.3);
+      setTimeout(() => { if (this.masterGain) this.masterGain.gain.value = 0.22; }, 380);
+    }
+  },
+
+  crossfade(name) {
+    if (this.currentBGM === name) return;
+    this.stop();
+    setTimeout(() => this.play(name), 380);
+  },
+};
+
+// ===================================
+// 仲間キャラクターの自動行動
+// ===================================
+
+// スダリン自動行動（すだち魔法）
+function runSudarin(cb) {
+  if (!battle.c1Alive || battle.enemyHP <= 0) { cb(); return; }
+  const dmg = rnd(7, 13);
+  battle.enemyHP -= dmg;
+  updateBattleUI();
+  bSprite.className = 'shake';
+  setTimeout(() => { bSprite.className = ''; }, 300);
+  typeMsg(`スダリンの すだちまほう！⚡\n${battle.enemy.name}に ${dmg} のダメージ！`, () => {
+    if (battle.enemyHP <= 0) { winBattle(); }
+    else { cb(); }
+  });
+}
+
+// じろうじい自動行動（回復 or 攻撃）
+function runJirou(cb) {
+  if (!battle.c2Alive || battle.enemyHP <= 0) { cb(); return; }
+
+  // 回復すべきメンバーがいるか判断
+  const healTarget = (() => {
+    if (battle.playerHP > 0 && battle.playerHP <= battle.playerMaxHP * 0.4)
+      return { name: 'たびびと', set: v => { battle.playerHP = Math.min(battle.playerMaxHP, battle.playerHP + v); } };
+    if (battle.c1Alive && battle.c1HP <= battle.c1MaxHP * 0.4)
+      return { name: 'スダリン', set: v => { battle.c1HP = Math.min(battle.c1MaxHP, battle.c1HP + v); } };
+    return null;
+  })();
+
+  if (healTarget) {
+    const heal = rnd(8, 14);
+    healTarget.set(heal);
+    updateBattleUI();
+    typeMsg(`じろうじいの いやしのて！💚\n${healTarget.name}のHPが ${heal} かいふく！`, cb);
+  } else {
+    const dmg = Math.max(1, rnd(4, 8) - (battle.enemy.def || 0));
+    battle.enemyHP -= dmg;
+    updateBattleUI();
+    bSprite.className = 'shake';
+    setTimeout(() => { bSprite.className = ''; }, 300);
+    typeMsg(`じろうじいの こうげき！\n${battle.enemy.name}に ${dmg} のダメージ！`, () => {
+      if (battle.enemyHP <= 0) { winBattle(); }
+      else { cb(); }
+    });
+  }
+}
+
+// 仲間ターン → 敵ターン の順に実行
+function runCompanionTurns(afterAll) {
+  runSudarin(() => {
+    if (!battle.active) return; // 勝利後は中断
+    runJirou(() => {
+      if (!battle.active) return;
+      afterAll();
+    });
+  });
+}
+
+// ----- スポット検知 -----
+function checkSpots() {
+  let nearestSpot = null;
+  let nearestDist = Infinity;
+
+  SPOTS.forEach(spot => {
+    const dx = state.player.x - spot.tileX;
+    const dy = state.player.y - spot.tileY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < SPOT_RADIUS && dist < nearestDist) {
+      nearestDist = dist;
+      nearestSpot = spot;
+    }
+  });
+
+  state.nearbySpot = nearestSpot;
+
+  // ヒント表示
+  const hint = document.getElementById('nearby-hint');
+  const isMobile = window.innerWidth < 700 || 'ontouchstart' in window;
+  if (nearestSpot && !state.foundSpots.has(nearestSpot.id) && !state.panelOpen) {
+    // 未発見スポットはバトルを促す
+    hint.textContent = isMobile
+      ? `⚔ タップで「${nearestSpot.name}」に挑戦！`
+      : `⚔ Enterで「${nearestSpot.name}」のモンスターと戦う！`;
+    hint.classList.add('show');
+  } else if (nearestSpot && state.foundSpots.has(nearestSpot.id) && !state.panelOpen) {
+    // 発見済みは情報を再表示
+    hint.textContent = isMobile
+      ? `📖 タップで「${nearestSpot.name}」の情報を見る`
+      : `📖 Enterで「${nearestSpot.name}」の情報を見る`;
+    hint.classList.add('show');
+  } else {
+    hint.classList.remove('show');
+  }
+}
+
+// ----- スポットを開く -----
+function openSpot(spot) {
+  if (state.panelOpen || battle.active) return;
+
+  if (state.foundSpots.has(spot.id)) {
+    // 発見済み → 情報パネルを直接表示（バトルなし）
+    state.panelOpen = true;
+    document.getElementById('spot-panel-emoji').textContent = spot.emoji;
+    document.getElementById('spot-panel-tag').textContent   = `${spot.tag} / ${spot.season}`;
+    document.getElementById('spot-panel-name').textContent  = spot.name;
+    document.getElementById('spot-panel-desc').textContent  = spot.desc;
+    document.getElementById('spot-panel-fact').innerHTML    = spot.fact;
+    document.getElementById('spot-panel').classList.add('open');
+    document.getElementById('nearby-hint').classList.remove('show');
+  } else {
+    // 未発見 → バトル開始！
+    startBattle(spot);
+  }
+}
+
+function closeSpot() {
+  state.panelOpen = false;
+  document.getElementById('spot-panel').classList.remove('open');
+}
+
+// ----- HUD -----
+function updateHUD() {
+  const n = state.foundSpots.size;
+  document.getElementById('found-count').textContent = n;
+  document.getElementById('progress-bar').style.width = `${(n / SPOTS.length) * 100}%`;
+  document.getElementById('hud-hp').textContent = `${battle.playerHP}/${battle.playerMaxHP}`;
+  document.getElementById('hud-mp').textContent = `${battle.playerMP}/${battle.playerMaxMP}`;
+}
+
+// ----- トースト -----
+function showToast(msg) {
+  const toast = document.getElementById('discover-toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ----- クリア画面 -----
+function showClear() {
+  const list = document.getElementById('clear-spots-list');
+  list.innerHTML = SPOTS.map(s => `<div class="clear-spot-chip">${s.emoji} ${s.name}</div>`).join('');
+  document.getElementById('clear-screen').style.display = 'flex';
+}
+
+function restartGame() {
+  state.foundSpots.clear();
+  state.player.x = 14.5;
+  state.player.y = 16;
+  state.panelOpen = false;
+  battle.playerHP = battle.playerMaxHP;
+  battle.playerMP = battle.playerMaxMP;
+  battle.c1HP = battle.c1MaxHP; battle.c1Alive = true;
+  battle.c2HP = battle.c2MaxHP; battle.c2Alive = true;
+  battle.active   = false;
+  battle.pendingSpot = null;
+  bScreen.classList.remove('active');
+  document.getElementById('clear-screen').style.display = 'none';
+  document.getElementById('spot-panel').classList.remove('open');
+  BGMEngine.crossfade('explore');
+  updateHUD();
+  updateBattleUI();
+}
+
+// ----- メインループ -----
+let lastTime = 0;
+function gameLoop(timestamp) {
+  const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+  lastTime = timestamp;
+
+  updatePlayer(dt);
+  updateCamera();
+  checkSpots();
+  updateParticles();
+
+  // 描画
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 空の背景グラデーション
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.4);
+  skyGrad.addColorStop(0, '#5ba3d0');
+  skyGrad.addColorStop(1, '#8ec5e6');
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, canvas.width, canvas.height * 0.4);
+
+  // タイル描画
+  const startTX = Math.floor(state.camera.x / TILE) - 1;
+  const startTY = Math.floor(state.camera.y / TILE) - 1;
+  const endTX   = startTX + Math.ceil(canvas.width  / TILE) + 3;
+  const endTY   = startTY + Math.ceil(canvas.height / TILE) + 3;
+
+  for (let ty = Math.max(0, startTY); ty < Math.min(MAP_H, endTY); ty++) {
+    for (let tx = Math.max(0, startTX); tx < Math.min(MAP_W, endTX); tx++) {
+      drawTile(tx, ty);
+    }
+  }
+
+  // スポット → プレイヤー → パーティクル
+  drawSpotMarkers();
+  // 仲間を主人公の後ろに描画
+  drawCompanion(-20, 8, '🍋', '#7ac943', '#b5e678'); // スダリン（左後ろ）
+  drawCompanion( 20, 6, '👴', '#c8916a', '#e8b090'); // じろうじい（右後ろ）
+  drawPlayer();
+  drawParticles();
+
+  // ミニマップ
+  drawMinimap();
+
+  state.animFrame = requestAnimationFrame(gameLoop);
+}
+
+// ----- キーボード -----
+window.addEventListener('keydown', e => {
+  state.keys[e.key] = true;
+  if ((e.key === 'Enter' || e.key === ' ') && state.nearbySpot && !state.panelOpen) {
+    openSpot(state.nearbySpot);
+  }
+  if (e.key === 'Escape' && state.panelOpen) {
+    closeSpot();
+  }
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
+    e.preventDefault();
+  }
+});
+window.addEventListener('keyup', e => { state.keys[e.key] = false; });
+
+// ----- Dパッド -----
+['up','down','left','right'].forEach(dir => {
+  const btn = document.getElementById(`dpad-${dir}`);
+  ['touchstart','mousedown'].forEach(ev => {
+    btn.addEventListener(ev, e => {
+      e.preventDefault();
+      state.dpad[dir] = true;
+      btn.classList.add('pressed');
+    }, { passive: false });
+  });
+  ['touchend','mouseup','mouseleave'].forEach(ev => {
+    btn.addEventListener(ev, e => {
+      state.dpad[dir] = false;
+      btn.classList.remove('pressed');
+    });
+  });
+});
+
+// ----- キャンバスタップ（スポットパネル or 発見） -----
+canvas.addEventListener('click', e => {
+  if (state.panelOpen) return;
+  if (state.nearbySpot) {
+    openSpot(state.nearbySpot);
+  }
+});
+
+// ----- スポットパネル閉じるボタン -----
+document.getElementById('spot-close').addEventListener('click', closeSpot);
+
+// ----- スワイプ操作 -----
+let touchStartX = 0, touchStartY = 0;
+let touchLastX = 0, touchLastY = 0;
+canvas.addEventListener('touchstart', e => {
+  touchStartX = touchLastX = e.touches[0].clientX;
+  touchStartY = touchLastY = e.touches[0].clientY;
+}, { passive: true });
+canvas.addEventListener('touchmove', e => {
+  const dx = e.touches[0].clientX - touchLastX;
+  const dy = e.touches[0].clientY - touchLastY;
+  touchLastX = e.touches[0].clientX;
+  touchLastY = e.touches[0].clientY;
+
+  // スワイプ方向をDpadに変換
+  const absDx = Math.abs(dx), absDy = Math.abs(dy);
+  if (absDx > absDy) {
+    state.dpad.right = dx > 0;
+    state.dpad.left  = dx < 0;
+    state.dpad.up = state.dpad.down = false;
+  } else {
+    state.dpad.down = dy > 0;
+    state.dpad.up   = dy < 0;
+    state.dpad.left = state.dpad.right = false;
+  }
+}, { passive: true });
+canvas.addEventListener('touchend', () => {
+  state.dpad = { up:false, down:false, left:false, right:false };
+});
+
+// ----- ゲームスタート -----
+document.getElementById('start-btn').addEventListener('click', () => {
+  document.getElementById('title-screen').style.display = 'none';
+  document.getElementById('game-wrap').style.display = 'flex';
+  state.gameStarted = true;
+  lastTime = performance.now();
+  requestAnimationFrame(gameLoop);
+  updateBattleUI(); // 初期HP表示
+  BGMEngine.play('explore'); // 探索BGM開始
+  showToast('🌿 仲間と一緒に探索しよう！7つのスポットを発見せよ');
+});
+</script>
+</body>
+</html>
